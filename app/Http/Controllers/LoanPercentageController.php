@@ -40,14 +40,14 @@ class LoanPercentageController extends Controller
         $loan->description = Input::get('p_description');
         $loan->paid = false;
         // Save the User and Agent of the Loan
-        $loanUser = $loanUser->addLoanee($request,'p_');
+        $loanUser = $loanUser->addLoanee($request, 'p_');
         $loan->user_id = $loanUser->id;
         $loan->agent_id = $loanUser->agent_id;
         try {
             $loan->save();
             $this->storePercentageLoan($loan);
         } catch (\Exception $e) {
-          dd($e);
+            dd($e);
         }
 
 //        if ($loan->type === 'Days') {
@@ -87,7 +87,7 @@ class LoanPercentageController extends Controller
     function storePercentageLoan(LoanPercentage $loan)
     {
         $records = collect();
-        $start_date =Carbon::parse( $loan->start_date);
+        $start_date = Carbon::parse($loan->start_date);
         $end_date = Carbon::parse($loan->end_date);
         $amount = $loan->installment;
         while (!($start_date->diffInMonths($end_date) == 0)) {
@@ -96,8 +96,7 @@ class LoanPercentageController extends Controller
         }
         try {
             $chunks = $records->chunk(25);
-            foreach($chunks as $chunk)
-            {
+            foreach ($chunks as $chunk) {
                 DB::table('loan_percentage_records')->insert($chunk->toArray());
             }
         } catch (\Exception $e) {
@@ -106,7 +105,7 @@ class LoanPercentageController extends Controller
         return $loan;
     }
 
-    function recordCreator($loan,Carbon $date, $amount)
+    function recordCreator($loan, Carbon $date, $amount)
     {
         $record = new LoanPercentageRecord();
         $record->loan_id = $loan->id;
@@ -116,5 +115,22 @@ class LoanPercentageController extends Controller
         $record->record_amount = $amount;
         $record->remaining_amount = $amount;
         return $record;
+    }
+
+    public function list(Request $request)
+    {
+        $data = $this->query()->get();
+        return json_encode($data);
+    }
+
+    function query()
+    {
+        $query = DB::table('loan_percentages as lp')
+            ->leftJoin('loan_users as u', 'lp.user_id', 'u.id')
+            ->leftJoin('agents as a', 'u.agent_id', 'a.id')
+            ->select('lp.*')
+            ->addSelect('u.*')
+            ->addSelect('a.name as agent_name');
+        return $query;
     }
 }

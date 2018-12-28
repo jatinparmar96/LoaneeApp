@@ -52,6 +52,8 @@ Route::get('view-LoanDetails/{id}','LoanController@LoanDetails')->name('getLoanD
 Route::get('closeCard/{id}','LoanController@closeCard')->name('closeCard');
 Route::get('extendRecord/{id}','LoanController@extendRecords')->name('extendRecord');
 
+//List Of All Types of Requests
+Route::get('get-Percentage','LoanPercentageController@list')->name('list-percentage');
 
 Route::get('/add-Record','RecordController@showRecordView')->name('showRecordView');
 Route::get('/add-BulkRecord','RecordController@showBulkRecordView')->name('showBulkRecordView');
