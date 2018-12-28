@@ -8,6 +8,7 @@ use App\LoanUser;
 use App\Pentalty;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,7 +25,6 @@ class LoanController extends Controller
     {
         return view('Loan.view-loans');
     }
-
     public function viewLoanDetails($id)
     {
 
@@ -377,5 +377,34 @@ class LoanController extends Controller
             $controller->updatePenalty($id, $record);
         }
         return redirect()->back();
+    }
+
+    public function list(Request $request)
+    {
+      $data = $this->query()->get();
+      foreach ($data as $record)
+      {
+         $record->pending_amount = LoanRecord::where('id',$record->id)->getPending()->pluck('record_amount')->sum();
+      }
+      dd($data);
+    }
+
+    function query()
+    {
+        $query = DB::table('loans as l')
+            ->leftJoin('loan_users as u','l.user_id','u.id')
+            ->leftJoin('agents as a','u.agent_id','a.id')
+            ->select('l.*')
+            ->addSelect('u.*')
+            ->addSelect('a.name as agent_name');
+        return $query;
+    }
+
+    function get_records()
+    {
+        $query = DB::table('loans as l')
+            ->leftJoin('loan_records as lr','l.id','lr.loan_id')
+            ->select('lr.*');
+        return $query;
     }
 }

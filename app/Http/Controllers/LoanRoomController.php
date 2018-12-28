@@ -99,4 +99,19 @@ class LoanRoomController extends Controller
         $record->remaining_amount = $amount;
         return $record;
     }
+
+    public function list(Request $request)
+    {
+        $data = $this->query()->get();
+        return json_encode($data);
+    }
+
+    function query()
+    {
+        $query = DB::table('loan_rooms as lr')
+            ->leftJoin('agents as a', 'lr.agent_id', 'a.id')
+            ->select('lr.*')
+            ->addSelect('a.name as agent_name');
+        return $query;
+    }
 }
