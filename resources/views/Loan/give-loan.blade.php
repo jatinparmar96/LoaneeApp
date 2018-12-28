@@ -589,21 +589,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <div class="form-group form-group-default required">
-                                                            <label id="type-label">Grace Period</label>
-                                                            <input type="number" id="r_lending_period"
-                                                                   name="r_lending_period"
-                                                                   value="{{old('r_lending_period')? old('r_lending_period'):60 }}"
-                                                                   class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
                                                         <div class="form-group required">
                                                             <label for="r_grace_period">Period(in Years)</label>
-                                                            <select name="r_grace_period" id="r_grace_period"
+                                                            <select class="form-control select2" name="r_grace_period" id="r_grace_period"
                                                                     onchange="r_update_installment();r_update_starting_date()">
-                                                                <option value=5>5 Years</option>
-                                                                <option value=10>10 Years</option>
+                                                                <option class="select2-choice" value=5>5 Years</option>
+                                                                <option class="select2-choice" value=10>10 Years</option>
                                                             </select>
                                                             {{--<input type="number" name="r_grace_period"--}}
                                                             {{--id="r_grace_period"--}}

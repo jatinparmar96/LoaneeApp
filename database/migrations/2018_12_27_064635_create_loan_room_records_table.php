@@ -16,7 +16,6 @@ class CreateLoanRoomRecordsTable extends Migration
         Schema::create('loan_room_records', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('loan_id');
-            $table->integer('user_id');
             $table->date('record_date');
             $table->double('record_amount',8,2);
             $table->double('remaining_amount',8,2);

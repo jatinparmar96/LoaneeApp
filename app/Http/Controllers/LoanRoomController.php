@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Agent;
 use App\LoanRoom;
 use App\LoanRoomRecord;
 use Carbon\Carbon;
@@ -14,7 +15,6 @@ class LoanRoomController extends Controller
 {
     public function store(Request $request)
     {
-        dd($request->all());
         Validator::make($request->all(), [
             'r_building_name' => 'required',
             'r_room_no' => 'required',
@@ -30,27 +30,45 @@ class LoanRoomController extends Controller
 
         $loanUser = new LoanUserController();
         $loan = new LoanRoom();
+
+        $loan->building_name = Input::get('r_building_name');
+        $loan->room_no = Input::get('r_room_no');
+        $loan->name = Input::get('r_loanee_name');
+        $loan->mobile_no = Input::get('r_mobile_number');
+        $loan->agent_id = $this->handle_agent(Input::get('agent'));
         $loan->start_date = Carbon::createFromFormat('d/m/Y', Input::get('r_start_date'))->format('Y-m-d');
         $loan->end_date = Carbon::createFromFormat('d/m/Y', Input::get('r_end_date'))->format('Y-m-d');
         $loan->loan_amount = Input::get('r_loan_amount');
         $loan->installment = Input::get('r_installment');
         $loan->repay_amount = Input::get('r_loan_amount');
-        $loan->paid_amount = 0;
         $loan->grace_period = Input::get('r_grace_period');
-        $loan->percentage = Input::get('r_percentage');
         $loan->description = Input::get('r_description');
+
+        $loan->paid_amount = 0;
         $loan->paid = false;
         // Save the User and Agent of the Loan
-        $loanUser = $loanUser->addLoanee($request, 'r_');
-        $loan->user_id = $loanUser->id;
-        $loan->agent_id = $loanUser->agent_id;
-        try {
-            $loan->save();
-            $this->storeRoomLoan($loan);
-        } catch (\Exception $e) {
-            dd($e);
-        }
+
+        $loan->save();
+        $this->storeRoomLoan($loan);
+
         return redirect()->route('giveLoanView')->with(['success' => "Loan added Successfully"]);
+    }
+
+    function handle_agent($agent)
+    {
+        $agent_id = 0;
+        $agentName = explode('-', $agent);
+        if (!(count($agentName) === 1)) {
+            $agent_id = $agentName[count($agentName) - 1];
+        } elseif ($agentName[count($agentName) - 1] == "") {
+            $agent_id = 0;
+        } else {
+            $agent = new Agent();
+            $agent->name = Input::get('agent');
+            $agent->save();
+            $agent_id = $agent->id;
+        }
+        return $agent_id;
     }
 
     function storeRoomLoan(LoanRoom $loan)
@@ -63,13 +81,10 @@ class LoanRoomController extends Controller
             $records->push($this->recordCreator($loan, $start_date, $amount));
             $start_date->addMonth();
         }
-        try {
-            $chunks = $records->chunk(25);
-            foreach ($chunks as $chunk) {
-                DB::table('loan_percentage_records')->insert($chunk->toArray());
-            }
-        } catch (\Exception $e) {
-            throw new \Exception('Error in creating Records' . $e);
+        $chunks = $records->chunk(25);
+        foreach ($chunks as $chunk) {
+            DB::table('loan_room_records')->insert($chunk->toArray());
+
         }
         return $loan;
     }
@@ -78,9 +93,8 @@ class LoanRoomController extends Controller
     {
         $record = new LoanRoomRecord();
         $record->loan_id = $loan->id;
-        $record->user_id = $loan->user_id;
         $record->record_date = $date->format('Y-m-d');
-        $record->penalty_date = $date->copy()->addMonth();
+        $record->penalty_date = $date->copy()->addMonth()->day(15);
         $record->record_amount = $amount;
         $record->remaining_amount = $amount;
         return $record;
