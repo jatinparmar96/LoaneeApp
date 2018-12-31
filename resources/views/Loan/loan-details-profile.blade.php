@@ -105,15 +105,17 @@
                         <div class="row">
                             <div class="col-lg-3">
                                 <div class="row d-flex flex-column mt-5">
-                                    <h6>Pending Amount</h6>
-                                    <h2 class="m-0 semi-bold"><span>₹</span>{{$pending_amount}}</h2>
+                                    <h6>Start Date</h6>
+                                    <a href="">
+                                        <h2 class="m-0 text-error bold">{{\Carbon\Carbon::createFromFormat('Y-m-d',$loan->start_date)->toFormattedDateString()}}</h2>
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-lg-3">
                                 <div class="row d-flex flex-column mt-5">
-                                    <h6>Next Payment Amount</h6>
+                                    <h6>End Date</h6>
                                     <a href="">
-                                        <h2 class="m-0 text-error bold"><span>₹</span>{{$loan->installment}}</h2>
+                                        <h2 class="m-0 text-error bold">{{\Carbon\Carbon::createFromFormat('Y-m-d',$loan->end_date)->toFormattedDateString()}}</h2>
                                     </a>
                                 </div>
                             </div>
@@ -133,47 +135,51 @@
                         <div class="row">
                         </div>
                         <div class="row">
-                            <div class="col-lg-8">
+                            <div class="col-lg-6">
                                 <div class="card-body">
-                                    <table class="table">
-                                        <tbody>
-                                        <tr>
-                                            <td><h2>Pending Amount</h2></td>
+                                    <table class="table-bordered bg-white">
+                                        <tbody >
+                                        <tr style="height: 5px !important;">
+                                            <td><h3>Pending Amount</h3></td>
                                             <td>
-                                                <h2 class="semi-bold  semi-bold"><span>₹</span>{{$pending_amount}}
-                                                </h2></td>
+                                                <h3 class="semi-bold  semi-bold"><span>₹</span>{{$current_pending_amount}}
+                                                </h3></td>
+                                        </tr>
+                                        <tr>
+                                            <td><h3>Total Pending Amount</h3></td>
+                                            <td>
+                                                <h3 class="semi-bold  semi-bold"><span>₹</span>{{$pending_amount}}
+                                                </h3></td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <h2>Total Penalty
-                                                </h2></td>
-                                            <td><h2 class="semi-bold  semi-bold"><span>₹</span>{{$penalty_amount}}
-                                                </h2></td>
+                                                <h3>Total Penalty
+                                                </h3></td>
+                                            <td><h3 class="semi-bold  semi-bold"><span>₹</span>{{$penalty_amount}}
+                                                </h3></td>
                                         </tr>
                                         <tr>
-                                            <td><h2>Total Amount to be paid
-                                                </h2></td>
-                                            <td><h2 class="semi-bold text-danger bold"><span>₹</span>{{$total_amount}}
-                                                </h2></td>
+                                            <td><h3>Total Amount to be paid
+                                                </h3></td>
+                                            <td><h3 class="semi-bold text-danger bold"><span>₹</span>{{$total_amount}}
+                                                </h3></td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                             @if(Auth::User()->isAdmin)
-                                <div class="col-lg-2">
+                                <div class="col-lg-6">
                                     <div class="row">
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-6">
                                             <div class="row d-flex flex-column mt-5">
                                                 <button class="btn btn-danger text-white toggle-btn" data-toggle="modal"
                                                         data-target="#confirmClose" id="btnToggleSlideUpSize">Close Card
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="row d-flex flex-column mt-5">
+                                        <div class="col-lg-6">
+                                            <div class="row d-flex flex-column mt-5 ml-2">
                                                 <button class="btn btn-primary text-white toggle-btn"
                                                         data-toggle="modal" data-target="#closePenalty"
                                                         id="btnToggleSlideUpSize">Close Penalty
@@ -182,7 +188,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-6">
                                             <div class="row d-flex flex-column mt-5">
                                                 <button class="btn btn-success text-white toggle-btn"
                                                         data-toggle="modal" data-target="#bulkPayModal"
@@ -190,10 +196,8 @@
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="row d-flex flex-column mt-5">
+                                        <div class="col-lg-6">
+                                            <div class="row d-flex flex-column mt-5 ml-2">
                                                 <button class="btn btn-warning toggle-btn"
                                                         data-toggle="modal" data-target="#extendRecord"
                                                         id="btnToggleSlideUpSize">Extend Loan
@@ -201,6 +205,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                             @endif
                         </div>

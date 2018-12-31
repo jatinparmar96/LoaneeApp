@@ -104,6 +104,7 @@
                                                                 <th>Method</th>
                                                                 <th>Amount</th>
                                                                 <th>Pending</th>
+                                                                <th>Penalty</th>
                                                                 <th>Action</th>
                                                             </tr>
                                                             </thead>
@@ -143,6 +144,7 @@
                                                                 <th>Method</th>
                                                                 <th>Amount</th>
                                                                 <th>Pending</th>
+                                                                <th>Penalty</th>
                                                                 <th>Action</th>
                                                             </tr>
                                                             </thead>
@@ -182,6 +184,8 @@
                                                                 <th>Method</th>
                                                                 <th>Amount</th>
                                                                 <th>Repayment</th>
+                                                                <th>Penalty</th>
+                                                                <th>Penalty</th>
                                                                 <th>Action</th>
                                                             </tr>
                                                             </thead>
@@ -279,6 +283,8 @@
 <script src="assets/js/form_elements.js" type="text/javascript"></script>
 <script src="assets/js/form_layouts.js" type="text/javascript"></script>
 <script src="assets/js/scripts.js" type="text/javascript"></script>
+{{--//'{{url("get-Loans")}}/0/' + type,--}}
+
 <script>
 
     $(document).ready(function () {
@@ -293,7 +299,6 @@
         $(".dt-button").addClass('btn btn-xs btn-primary');
         $('.form-control.input-sm').focus();
     }
-
     function initializeDatatables(id, type) {
         let ID = '#' + id;
         $(ID).DataTable({
@@ -303,17 +308,18 @@
                     'excel', 'pdf', 'print'
                 ],
                 ajax: {
-                    url: '{{url("get-Loans")}}/0/' + type,
+                    url: '{{url("days_list")}}',
                     dataSrc: ''
                 },
                 columns: [
-                    {data: 'user_name'},
+                    {data: 'name'},
                     {data: "card_number"},
                     {data: 'start_date'},
                     {data: 'end_date'},
                     {data: 'method'},
                     {data: 'repay_amount'},
-                    {data: 'remaining_amount'},
+                    {data: 'pending_amount'},
+                    {data: 'penalty_amount'},
                     {
                         data: 'id',
                         render: function (data, type, row) {

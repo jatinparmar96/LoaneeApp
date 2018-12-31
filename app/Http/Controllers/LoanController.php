@@ -25,6 +25,7 @@ class LoanController extends Controller
     {
         return view('Loan.view-loans');
     }
+
     public function viewLoanDetails($id)
     {
 
@@ -83,10 +84,12 @@ class LoanController extends Controller
         $user = $loan->getUser()->first();
         $agent = $user->getAgent()->first();
         $records = LoanRecord::where('loan_id', $id)->getPending();
-        $records_amount = $records->pluck('remaining_amount');
+        $current_pending_amount = $records->where('record_date','<=',Carbon::today())->pluck('remaining_amount')->sum();
+        $records_amount = LoanRecord::where('loan_id',$id)->getPending()->pluck('remaining_amount')->sum();
         $records_latest_pending = $records->first();
-
-        $pending_amount = 0;
+        $loan_start_date = $loan->start_date;
+        $loan_end_date = $loan->end_date;
+        $pending_amount = $records_amount;
 
         $latest_paid_record = LoanRecord::where([
             ['paid', 1],
@@ -110,21 +113,21 @@ class LoanController extends Controller
                 $penalty_amount = 0;
             }
         }
-        foreach ($records_amount as $amount) {
-            $pending_amount += $amount;
-        }
         $total_amount = $penalty_amount + $pending_amount;
         return view('Loan.loan-details-profile',
             compact(
                 'loan',
                 'user',
                 'agent',
+                'current_pending_amount',
                 'pending_amount',
                 'records_latest_pending',
                 'latest_paid_date',
                 'total_amount',
                 'penalty_amount',
-                'end_date'
+                'end_date',
+                'loan_start_date',
+                'loan_end_date'
             ));
     }
 
@@ -264,65 +267,6 @@ class LoanController extends Controller
         return $record;
     }
 
-    function storePercentageLoan(Loan $loan)
-    {
-        $count = 0;
-        $records = [];
-        $loanAmount = $loan->repay_amount * 100 / (100 + Input::get('lending_period'));
-        $loan->loan_amount = $loanAmount;
-        $loan->save();
-        $start_date = Carbon::createFromFormat('d/m/Y', Input::get('startDate'));
-        $end_date = Carbon::createFromFormat('d/m/Y', Input::get('endDate'));
-        $amount = $loan->installment;
-        while (!($start_date->diffInMonths($end_date) == 0)) {
-            $records[$count] = $this->recordCreator($loan, $start_date, $amount);
-            $count++;
-            $start_date->addMonth();
-        }
-        return $loan;
-
-//        if ($loan->method === 'Daily') {
-//            $days = round(($loan->lending_period / 12) * 365);
-//            $end_date = $start_date->copy()->addDays($days);
-//            $loan->end_date= $end_date;
-//
-//            $amount = round($repayAmount / $days);
-//            $loan->installment = $amount;
-//            $loan->save();
-//            while (!($start_date->diffInDays($end_date) === 0)) {
-//                $records[$count] = $this->recordCreator($loan, $start_date, $amount);
-//                $count++;
-//                $start_date->addDay();
-//            }
-//        } elseif ($loan->method === 'Weekly') {
-//
-//            $weeks = round(($loan->lending_period / 12) * 365 / 7);
-//            $end_date = $start_date->copy()->addWeeks($weeks);
-//            $loan->end_date= $end_date;
-//
-//            $amount = round($repayAmount / $weeks);
-//            $loan->installment = $amount;
-//            $loan->save();
-//            while (!($start_date->diffInWeeks($end_date) == 0)) {
-//                $records[$count] = $this->recordCreator($loan, $start_date, $amount);
-//                $count++;
-//                $start_date->addWeek();
-//            }
-//        } else {
-//            $month = $loan->lending_period;
-//            $end_date = $start_date->copy()->addMonth($month);
-//            $loan->end_date= $end_date;
-//            $amount = round($repayAmount / $month);
-//            $loan->installment = $amount;
-//            $loan->save();
-//            while (!($start_date->diffInMonths($end_date) == 0)) {
-//                $records[$count] = $this->recordCreator($loan, $start_date, $amount);
-//                $count++;
-//                $start_date->addMonth();
-//            }
-//        }
-    }
-
     public function closeCard(Request $request, $id)
     {
         $loan = Loan::where('id', $id)->first();
@@ -381,30 +325,34 @@ class LoanController extends Controller
 
     public function list(Request $request)
     {
-      $data = $this->query()->get();
-      foreach ($data as $record)
-      {
-         $record->pending_amount = LoanRecord::where('id',$record->id)->getPending()->pluck('record_amount')->sum();
-      }
-      dd($data);
+        $data = $this->get_records()->get();
+        return json_encode($data);
     }
 
     function query()
     {
         $query = DB::table('loans as l')
-            ->leftJoin('loan_users as u','l.user_id','u.id')
-            ->leftJoin('agents as a','u.agent_id','a.id')
+            ->leftJoin('loan_users as u', 'l.user_id', 'u.id')
+            ->leftJoin('agents as a', 'u.agent_id', 'a.id')
             ->select('l.*')
-            ->addSelect('u.*')
-            ->addSelect('a.name as agent_name');
+            ->addSelect('u.name', 'u.card_number');
         return $query;
     }
 
     function get_records()
     {
-        $query = DB::table('loans as l')
-            ->leftJoin('loan_records as lr','l.id','lr.loan_id')
-            ->select('lr.*');
+        $query = DB::table('loan_records as lr')
+            ->leftJoin('loans as l', 'l.id', '=', 'lr.loan_id')
+            ->leftJoin('pentalties as p','l.id','p.loan_id')
+            ->leftJoin('loan_users as u','u.id','l.user_id')
+            ->select('l.*')
+            ->addSelect(DB::raw("SUM(lr.record_amount) as pending_amount"))
+            ->addSelect('p.amount as penalty_amount')
+            ->addSelect('u.name','u.card_number')
+            ->where('lr.record_date','<=',Carbon::today())
+            ->where('lr.paid',false)
+            ->where('p.paid',false)
+            ->groupBy('lr.loan_id');
         return $query;
     }
 }
