@@ -61,13 +61,18 @@
 
             <!-- START CONTAINER FLUID -->
             <div class=" container-fluid   container-fixed-lg">
-                <div class="card card-transparent">
-
-                    <div class="card-header ">
-                        <div class="card-title">
-                            <h3>Today's Pending Records</h3>
-                        </div>
-                    </div>
+                <ul class="nav nav-tabs nav-tabs-fillup">
+                    <li class="active">
+                        <a class="active" data-toggle="tab" href="#days"><h2 class="bold">Daily</h2></a>
+                    </li>
+                    <li class="">
+                        <a data-toggle="tab" href="#percentage"><h2 class="bold">Fixed</h2></a>
+                    </li>
+                    <li class="">
+                        <a data-toggle="tab" href="#room"><h2 class="bold">Room</h2></a>
+                    </li>
+                </ul>
+                <div class="tab-content">
                     @if(Session::has('success'))
                         <div class="alert alert-success" role="alert">
                             <button class="close" data-dismiss="alert"></button>
@@ -80,43 +85,146 @@
                             <strong>Error: </strong>{{Session::get('error')}}
                         </div>
                     @endif
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class=" container-fluid   container-fixed-lg bg-white">
-                                    <!-- START card -->
-                                    <div class="card card-transparent">
-                                        <div class="card-body">
 
-                                            <table class="table data-table" id="tableWithSearch" style="width: 100%">
-                                                <thead>
-                                                <tr>
-                                                    <th style="width: 20%;">User Name</th>
-                                                    <th style="width: 5%;">Card Number</th>
-                                                    <th style="width: 7%;">Amount</th>
-                                                    <th style="width: 7%;">Penalty_amount</th>
-                                                    <th style="width: 10%;">Record Date</th>
-                                                    @if(Auth::User()->isAdmin)
+                    <div class="tab-pane active" id="days">
+                        <div class="card card-transparent">
+                            <div class="card-header ">
+                                <div class="card-title">
+                                    <h3>Today's Pending Records</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class=" container-fluid   container-fixed-lg bg-white">
+                                            <!-- START card -->
+                                            <div class="card card-transparent">
+                                                <div class="card-body">
+                                                    <table class="table" id="tableWithSearch"
+                                                           style="width: 100%">
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="width: 5px !important;">User Name</th>
+                                                            <th style="width: 5% !important;">Card Number</th>
+                                                            <th style="width: 7% !important;">Amount</th>
+                                                            <th style="width: 7% !important;">Penalty_amount</th>
+                                                            <th style="width: 10% !important;">Record Date</th>
+                                                            @if(Auth::User()->isAdmin)
 
-                                                        <th style="width: 5%;">Pay Full</th>
-                                                        <th style="width: 5%;">Pay Bulk</th>
-                                                        <th style="width: 5%;">Pay Penalty</th>
-                                                        <th style="width: 5%;">Loan Details</th>
-                                                    @endif
-                                                </tr>
-                                                </thead>
+                                                                <th style="width: 5%;">Pay Full</th>
+                                                                <th style="width: 5%;">Pay Bulk</th>
+                                                                <th style="width: 5%;">Pay Penalty</th>
+                                                                <th style="width: 5%;">Loan Details</th>
+                                                            @endif
+                                                        </tr>
+                                                        </thead>
 
-                                            </table>
-
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <!-- END card -->
                                         </div>
                                     </div>
-                                    <!-- END card -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="percentage">
+                        <div class="card card-transparent">
+
+                            <div class="card-header ">
+                                <div class="card-title">
+                                    <h3>Today's Pending Records</h3>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class=" container-fluid   container-fixed-lg bg-white">
+                                            <!-- START card -->
+                                            <div class="card card-transparent">
+                                                <div class="card-body">
+
+                                                    <table class="table data-table" id=""
+                                                           style="width: 100%">
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="width: 20%;">User Name</th>
+                                                            <th style="width: 5%;">Card Number</th>
+                                                            <th style="width: 7%;">Amount</th>
+                                                            <th style="width: 7%;">Penalty_amount</th>
+                                                            <th style="width: 10%;">Record Date</th>
+                                                            @if(Auth::User()->isAdmin)
+
+                                                                <th style="width: 5%;">Pay Full</th>
+                                                                <th style="width: 5%;">Pay Bulk</th>
+                                                                <th style="width: 5%;">Pay Penalty</th>
+                                                                <th style="width: 5%;">Loan Details</th>
+                                                            @endif
+                                                        </tr>
+                                                        </thead>
+
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                            <!-- END card -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="room">
+                        <div class="card card-transparent">
+
+                            <div class="card-header ">
+                                <div class="card-title">
+                                    <h3>Today's Pending Records</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class=" container-fluid   container-fixed-lg bg-white">
+                                            <!-- START card -->
+                                            <div class="card card-transparent">
+                                                <div class="card-body">
+
+                                                    <table class="table data-table" id=""
+                                                           style="width: 100%">
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="width: 20%;">User Name</th>
+                                                            <th style="width: 5%;">Card Number</th>
+                                                            <th style="width: 7%;">Amount</th>
+                                                            <th style="width: 7%;">Penalty_amount</th>
+                                                            <th style="width: 10%;">Record Date</th>
+                                                            @if(Auth::User()->isAdmin)
+
+                                                                <th style="width: 5%;">Pay Full</th>
+                                                                <th style="width: 5%;">Pay Bulk</th>
+                                                                <th style="width: 5%;">Pay Penalty</th>
+                                                                <th style="width: 5%;">Loan Details</th>
+                                                            @endif
+                                                        </tr>
+                                                        </thead>
+
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                            <!-- END card -->
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
             <!-- END CONTAINER FLUID -->
         </div>
@@ -264,15 +372,17 @@
 <script src="{{asset('assets/js/form_layouts.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/scripts.js')}}" type="text/javascript"></script>
 <script>
+
     $('#tableWithSearch').DataTable({
-        destroy: true,
+        destroy:true,
         ajax: {
             url: "{{route('pending_list')}}",
             dataSrc: ''
         },
-        columns: [{
-            data: 'name'
-        },
+        columns: [
+            {
+                data: 'name'
+            },
             {
                 data: 'card_number'
             },
@@ -280,7 +390,7 @@
                 data: 'remaining_amount'
             },
             {
-              data: 'penalty_amount'
+                data: 'penalty_amount'
             },
             {
                 data: 'record_date'
@@ -334,7 +444,6 @@
     }
 
     function openModel(value) {
-
         $('#myModal').modal('show');
         $('#modalForm').attr('action', "{{url('pay-custom-penalty')}}/" + value);
     }
@@ -342,7 +451,7 @@
     $('.form-control.date').mask('00/00/0000');
     $('.form-control.date').datepicker({
         format: 'dd/mm/yyyy'
-    })
+    });
 
     $('#modelForm').submit(function () {
         $(this).find(':input[type=submit]').prop('disabled', true);

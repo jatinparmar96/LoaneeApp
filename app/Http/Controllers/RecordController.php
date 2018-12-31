@@ -116,7 +116,7 @@ class RecordController extends Controller
         }
         return json_encode($todayRecords);
     }
-    
+
     public function pending_list()
     {
         $data = $this->query()->get();

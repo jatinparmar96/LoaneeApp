@@ -128,8 +128,8 @@ class LoanPercentageController extends Controller
         $query = DB::table('loan_percentages as lp')
             ->leftJoin('loan_users as u', 'lp.user_id', 'u.id')
             ->leftJoin('agents as a', 'u.agent_id', 'a.id')
-            ->select('lp.*')
-            ->addSelect('u.*')
+            ->select('lp.start_date','lp.end_date','lp.loan_amount','lp.repay_amount')
+            ->addSelect('u.name','u.card_number')
             ->addSelect('a.name as agent_name');
         return $query;
     }

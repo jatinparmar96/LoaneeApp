@@ -133,7 +133,7 @@
                                                 <!-- START card -->
                                                 <div class="card card-transparent">
                                                     <div class="card-body">
-                                                        <table class="table  dt-responsive nowrap" id="percent"
+                                                        <table class="table dt-responsive nowrap" id="percent"
                                                                style="width:100%">
                                                             <thead>
                                                             <tr>
@@ -141,10 +141,8 @@
                                                                 <th>Card Number</th>
                                                                 <th>Starting</th>
                                                                 <th>Deadline</th>
-                                                                <th>Method</th>
                                                                 <th>Amount</th>
-                                                                <th>Pending</th>
-                                                                <th>Penalty</th>
+                                                                {{--<th>Penalty</th>--}}
                                                                 <th>Action</th>
                                                             </tr>
                                                             </thead>
@@ -178,13 +176,12 @@
                                                             <thead>
                                                             <tr>
                                                                 <th>User Name</th>
-                                                                <th>Card Number</th>
+                                                                <th>Building Name</th>
+                                                                <th>Room No</th>
                                                                 <th>Starting</th>
                                                                 <th>Deadline</th>
-                                                                <th>Method</th>
                                                                 <th>Amount</th>
                                                                 <th>Repayment</th>
-                                                                <th>Penalty</th>
                                                                 <th>Penalty</th>
                                                                 <th>Action</th>
                                                             </tr>
@@ -288,7 +285,9 @@
 <script>
 
     $(document).ready(function () {
-        initializeDatatables('daily', "Days");
+        initializeDaysDatatables();
+        initializePercentageDatatables();
+        initializeRoomDatatables();
         // initializeDatatables('room',"Room");
         $(".dt-button").addClass('btn btn-xs btn-primary');
         $('.form-control.input-sm').focus();
@@ -299,16 +298,15 @@
         $(".dt-button").addClass('btn btn-xs btn-primary');
         $('.form-control.input-sm').focus();
     }
-    function initializeDatatables(id, type) {
-        let ID = '#' + id;
-        $(ID).DataTable({
+    function initializeDaysDatatables() {
+        $('#daily').DataTable({
                 destroy: true,
                 dom: 'Bfrtip',
                 buttons: [
                     'excel', 'pdf', 'print'
                 ],
                 ajax: {
-                    url: '{{url("days_list")}}',
+                    url: '{{url('days_list')}}',
                     dataSrc: ''
                 },
                 columns: [
@@ -335,7 +333,74 @@
         );
     }
 
+    function initializePercentageDatatables() {
+        $('#percent').DataTable({
+                destroy: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf', 'print'
+                ],
+                ajax: {
+                    url: '{{url('percentage_list')}}',
+                    dataSrc: ''
+                },
+                columns: [
+                    {data: 'name'},
+                    {data: "card_number"},
+                    {data: 'start_date'},
+                    {data: 'end_date'},
+                    {data: 'repay_amount'},
+                    //{data: 'penalty_amount'},
+                    {
+                        data: 'id',
+                        render: function (data, type, row) {
+                            return "<div class='btn-group'>" +
+                                "<a href=view-LoanDetails/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
+                                "<i class='fa fa-eye'></i>" +
+                                "</button> </div>";
+                        }
+                    }
 
+                ]
+            }
+        );
+    }
+
+    function initializeRoomDatatables() {
+        $('#room').DataTable({
+                destroy: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf', 'print'
+                ],
+                ajax: {
+                    url: '{{url('room_list')}}',
+                    dataSrc: ''
+                },
+                columns: [
+                    {data: 'name'},
+                    {data: "building_name"},
+                    {data: 'room_no'},
+                    {data: 'start_date'},
+                    {data: 'end_date'},
+                    {data: 'loan_amount'},
+                    {data: 'installment'},
+                    {data: 'repay_amount'},
+                    //{data: 'penalty_amount'},
+                    {
+                        data: 'id',
+                        render: function (data, type, row) {
+                            return "<div class='btn-group'>" +
+                                "<a href=view-LoanDetails/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
+                                "<i class='fa fa-eye'></i>" +
+                                "</button> </div>";
+                        }
+                    }
+
+                ]
+            }
+        );
+    }
 </script>
 
 
