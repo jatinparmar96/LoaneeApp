@@ -71,10 +71,11 @@
                             <a class="active" data-toggle="tab" href="#days"><h2 class="bold">Daily</h2></a>
                         </li>
                         <li class="">
-                            <a data-toggle="tab" href="#percentage"><h2 class="bold">Fixed</h2></a>
+                            <a data-toggle="tab" href="#percentage" onclick="loadPercentageTable();"><h2
+                                        class="bold">Fixed</h2></a>
                         </li>
                         <li class="">
-                            <a data-toggle="tab" href="#room"><h2 class="bold">Room</h2></a>
+                            <a data-toggle="tab" onclick="loadRoomTable();  $('.form-control.input-sm').focus();" href="#room"><h2 class="bold">Room</h2></a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -171,7 +172,7 @@
                                                 <!-- START card -->
                                                 <div class="card card-transparent">
                                                     <div class="card-body">
-                                                        <table class="table  dt-responsive nowrap" id="room"
+                                                        <table class="table  dt-responsive nowrap" id="room_table"
                                                                style="width:100%">
                                                             <thead>
                                                             <tr>
@@ -181,8 +182,9 @@
                                                                 <th>Starting</th>
                                                                 <th>Deadline</th>
                                                                 <th>Amount</th>
+                                                                <th>Installment</th>
                                                                 <th>Repayment</th>
-                                                                <th>Penalty</th>
+                                                                {{--<th>Penalty</th>--}}
                                                                 <th>Action</th>
                                                             </tr>
                                                             </thead>
@@ -284,20 +286,21 @@
 
 <script>
 
+    var percentage_loaded = true;
+    var room_loaded = true;
     $(document).ready(function () {
         initializeDaysDatatables();
-        initializePercentageDatatables();
-        initializeRoomDatatables();
-        // initializeDatatables('room',"Room");
-        $(".dt-button").addClass('btn btn-xs btn-primary');
+        // initializePercentageDatatables();
+        //initializeRoomDatatables();
+
         $('.form-control.input-sm').focus();
     });
 
     function fetchFixed() {
         initializeDatatables('percent', "Percentage");
-        $(".dt-button").addClass('btn btn-xs btn-primary');
-        $('.form-control.input-sm').focus();
+
     }
+
     function initializeDaysDatatables() {
         $('#daily').DataTable({
                 destroy: true,
@@ -331,75 +334,102 @@
                 ]
             }
         );
+        $(".dt-button").addClass('btn btn-xs btn-primary');
+        $('.form-control.input-sm').focus();
     }
 
     function initializePercentageDatatables() {
-        $('#percent').DataTable({
-                destroy: true,
-                dom: 'Bfrtip',
-                buttons: [
-                    'excel', 'pdf', 'print'
-                ],
-                ajax: {
-                    url: '{{url('percentage_list')}}',
-                    dataSrc: ''
-                },
-                columns: [
-                    {data: 'name'},
-                    {data: "card_number"},
-                    {data: 'start_date'},
-                    {data: 'end_date'},
-                    {data: 'repay_amount'},
-                    //{data: 'penalty_amount'},
-                    {
-                        data: 'id',
-                        render: function (data, type, row) {
-                            return "<div class='btn-group'>" +
-                                "<a href=view-LoanDetails/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
-                                "<i class='fa fa-eye'></i>" +
-                                "</button> </div>";
+        if (percentage_loaded) {
+            $('#percent').DataTable({
+                    destroy: true,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'excel', 'pdf', 'print'
+                    ],
+                    ajax: {
+                        url: '{{url('percentage_list')}}',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {data: 'name'},
+                        {data: "card_number"},
+                        {data: 'start_date'},
+                        {data: 'end_date'},
+                        {data: 'repay_amount'},
+                        //{data: 'penalty_amount'},
+                        {
+                            data: 'id',
+                            render: function (data, type, row) {
+                                return "<div class='btn-group'>" +
+                                    "<a href=view-LoanDetails/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
+                                    "<i class='fa fa-eye'></i>" +
+                                    "</button> </div>";
+                            }
                         }
-                    }
 
-                ]
-            }
-        );
+                    ]
+                }
+            );
+            $(".dt-button").addClass('btn btn-xs btn-primary');
+
+            percentage_loaded = false;
+        }
+        $('.form-control.input-sm').focus();
+    }
+
+    function loadPercentageTable() {
+        if (percentage_loaded) {
+            initializePercentageDatatables();
+            percentage_loaded = false;
+        }
+        $('.form-control.input-sm').focus();
+    }
+
+    function loadRoomTable() {
+        if (room_loaded) {
+            initializeRoomDatatables();
+            room_loaded = false;
+        }
+        $('.form-control.input-sm').focus();
     }
 
     function initializeRoomDatatables() {
-        $('#room').DataTable({
-                destroy: true,
-                dom: 'Bfrtip',
-                buttons: [
-                    'excel', 'pdf', 'print'
-                ],
-                ajax: {
-                    url: '{{url('room_list')}}',
-                    dataSrc: ''
-                },
-                columns: [
-                    {data: 'name'},
-                    {data: "building_name"},
-                    {data: 'room_no'},
-                    {data: 'start_date'},
-                    {data: 'end_date'},
-                    {data: 'loan_amount'},
-                    {data: 'installment'},
-                    {data: 'repay_amount'},
-                    //{data: 'penalty_amount'},
-                    {
-                        data: 'id',
-                        render: function (data, type, row) {
-                            return "<div class='btn-group'>" +
-                                "<a href=view-LoanDetails/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
-                                "<i class='fa fa-eye'></i>" +
-                                "</button> </div>";
-                        }
-                    }
 
-                ]
-            }
-        );
+            $('#room_table').DataTable({
+                    destroy: true,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'excel', 'pdf', 'print'
+                    ],
+                    ajax: {
+                        url: '{{url('room_list')}}',
+                        dataSrc: ''
+                    },
+                    columns: [
+                        {data: 'name'},
+                        {data: "building_name"},
+                        {data: 'room_no'},
+                        {data: 'start_date'},
+                        {data: 'end_date'},
+                        {data: 'loan_amount'},
+                        {data: 'installment'},
+                        {data: 'repay_amount'},
+                        //{data: 'penalty_amount'},
+                        {
+                            data: 'id',
+                            render: function (data, type, row) {
+                                return "<div class='btn-group'>" +
+                                    "<a href=view-LoanDetails/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
+                                    "<i class='fa fa-eye'></i>" +
+                                    "</button> </div>";
+                            }
+                        }
+
+                    ]
+                }
+            );
+            $(".dt-button").addClass('btn btn-xs btn-primary');
+
     }
 </script>
 
