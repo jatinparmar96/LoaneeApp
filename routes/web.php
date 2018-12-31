@@ -56,6 +56,8 @@ Route::get('extendRecord/{id}','LoanController@extendRecords')->name('extendReco
 Route::get('days_list','LoanController@list')->name('list-percentage');
 Route::get('percentage_list','LoanPercentageController@list')->name('list-percentage');
 Route::get('room_list','LoanRoomController@list')->name('list-percentage');
+Route::get('pending_list','RecordController@pending_list')->name('pending_list');
+
 
 Route::get('/add-Record','RecordController@showRecordView')->name('showRecordView');
 Route::get('/add-BulkRecord','RecordController@showBulkRecordView')->name('showBulkRecordView');

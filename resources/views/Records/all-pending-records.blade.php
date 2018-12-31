@@ -94,6 +94,7 @@
                                                     <th style="width: 20%;">User Name</th>
                                                     <th style="width: 5%;">Card Number</th>
                                                     <th style="width: 7%;">Amount</th>
+                                                    <th style="width: 7%;">Penalty_amount</th>
                                                     <th style="width: 10%;">Record Date</th>
                                                     @if(Auth::User()->isAdmin)
 
@@ -266,7 +267,7 @@
     $('#tableWithSearch').DataTable({
         destroy: true,
         ajax: {
-            url: "{{route('getAllPendingRecords')}}",
+            url: "{{route('pending_list')}}",
             dataSrc: ''
         },
         columns: [{
@@ -277,6 +278,9 @@
             },
             {
                 data: 'remaining_amount'
+            },
+            {
+              data: 'penalty_amount'
             },
             {
                 data: 'record_date'
