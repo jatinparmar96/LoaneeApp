@@ -86,6 +86,7 @@ class LoanRoomController extends Controller
             DB::table('loan_room_records')->insert($chunk->toArray());
 
         }
+        app('App\Http\Controllers\Penalty\RoomPenaltyController')->create_new_penalty($loan);
         return $loan;
     }
 

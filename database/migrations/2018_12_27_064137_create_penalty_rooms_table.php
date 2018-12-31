@@ -15,6 +15,14 @@ class CreatePenaltyRoomsTable extends Migration
     {
         Schema::create('penalty_rooms', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('loan_id');
+            $table->integer('loan_installment_amount')->default(500);
+            $table->integer('count')->default(1);
+            $table->integer('amount');
+            $table->integer('received_amount');
+            $table->date('penalty_date');
+            $table->boolean('paid')->default(false);
+            $table->boolean('active_status')->default(false);
             $table->timestamps();
         });
     }

@@ -14,7 +14,6 @@ class RoomPenaltyController extends Controller
         $penalty = new PenaltyRoom();
         $penalty->loan_id = $loan->id;
         $penalty->amount = 0;
-        $penalty->loan_installment_amount = $loan->installment;
         $penalty->received_amount = 0;
         $penalty->penalty_date = Carbon::parse($loan->start_date)->addMonth();
         $penalty->save();
@@ -24,6 +23,23 @@ class RoomPenaltyController extends Controller
     {
         $today = Carbon::today();
         $query = PenaltyRoom::where('penalty_date', '<', $today)->where('paid', false)->get();
-
+        foreach ($query as $data)
+        {
+            $start_time = Carbon::parse($data->penalty_date);
+            while ($start_time->lessThan($today))
+            {
+                $count = $data->count;
+                $penalty_amount = 0;
+                while($count>=1){
+                    $penalty_amount += $count * $data->loan_installment_amount;
+                    $count--;
+                }
+                $data->amount = $penalty_amount;
+                $data->count++;
+                $data->penalty_date = Carbon::parse($data->penalty_date)->addMonth();
+                $data->save();
+                $start_time->addMonth();
+            }
+        }
     }
 }
