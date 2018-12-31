@@ -58,6 +58,7 @@ Route::get('percentage_list','LoanPercentageController@list')->name('list-percen
 Route::get('room_list','LoanRoomController@list')->name('list-room');
 Route::get('pending_list','RecordController@pending_list')->name('pending_list');
 
+Route::get('test_check','Penalty\PercentagePenaltyController@check_penalty');
 
 Route::get('/add-Record','RecordController@showRecordView')->name('showRecordView');
 Route::get('/add-BulkRecord','RecordController@showBulkRecordView')->name('showBulkRecordView');

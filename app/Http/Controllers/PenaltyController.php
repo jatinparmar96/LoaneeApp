@@ -58,7 +58,7 @@ class PenaltyController extends Controller
     public function refreshPenalty()
     {
         $this->newPenalty();
-
+        app('App\Http\Controllers\Penalty\PercentagePenaltyController')->check_penalty();
         return redirect()->back();
     }
 

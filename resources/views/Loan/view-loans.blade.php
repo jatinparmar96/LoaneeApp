@@ -143,7 +143,7 @@
                                                                 <th>Starting</th>
                                                                 <th>Deadline</th>
                                                                 <th>Amount</th>
-                                                                {{--<th>Penalty</th>--}}
+                                                                <th>Penalty</th>
                                                                 <th>Action</th>
                                                             </tr>
                                                             </thead>
@@ -356,7 +356,7 @@
                         {data: 'start_date'},
                         {data: 'end_date'},
                         {data: 'repay_amount'},
-                        //{data: 'penalty_amount'},
+                        {data: 'penalty_amount'},
                         {
                             data: 'id',
                             render: function (data, type, row) {

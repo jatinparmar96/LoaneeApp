@@ -99,6 +99,7 @@ class LoanPercentageController extends Controller
             foreach ($chunks as $chunk) {
                 DB::table('loan_percentage_records')->insert($chunk->toArray());
             }
+            app('App\Http\Controllers\Penalty\PercentagePenaltyController')->create_new_penalty($loan);
         } catch (\Exception $e) {
             throw new \Exception('Error in creating Records' . $e);
         }
@@ -119,7 +120,12 @@ class LoanPercentageController extends Controller
 
     public function list(Request $request)
     {
+//        ->where([
+//        ['p.active_status',true],
+//        ['p.paid',false]
+//    ])
         $data = $this->query()->get();
+
         return json_encode($data);
     }
 
@@ -128,9 +134,11 @@ class LoanPercentageController extends Controller
         $query = DB::table('loan_percentages as lp')
             ->leftJoin('loan_users as u', 'lp.user_id', 'u.id')
             ->leftJoin('agents as a', 'u.agent_id', 'a.id')
+            ->leftJoin('penalty_percentages as p','lp.id','p.loan_id')
             ->select('lp.start_date','lp.end_date','lp.loan_amount','lp.repay_amount')
             ->addSelect('u.name','u.card_number')
-            ->addSelect('a.name as agent_name');
+            ->addSelect('a.name as agent_name')
+            ->addSelect('p.amount as penalty_amount');
         return $query;
     }
 }
