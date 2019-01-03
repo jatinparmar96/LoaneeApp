@@ -71,46 +71,46 @@ function updateStartingDate() {
     $('#endDate').val(end);
 }
 
-$("#mainForm").submit(function (e) {
-    e.preventDefault();
-    $(this).find(':input[type=submit]').prop('disabled', true);
-    var form = $(this);
-    var url = form.attr('action');
-    let options = {
-        style: 'circle',
-        title: 'Success',
-        message: 'Loan Added Successfully',
-        position: 'top-right',
-        type: 'success',
-        timeout: 5000
-    };
-    let error = {
-        style: 'circle',
-        title: 'Error',
-        message: 'Loan Could Not be Entered Successfully',
-        position: 'top-right',
-        type: 'danger',
-        timeout: 5000
-    };
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: form.serialize(), // serializes the form's elements.
-        success: function (data) {
-            if (data.errors) {
-                for (let prop in data.errors) {
-                    error.message = data.errors[prop][0];
-                    $('body').pgNotification(error).show();
-                }
-            }
-            else {
-                $('body').pgNotification(options).show();
-            }
-            console.log(data); // show response from the php script.
-            form.find(':input[type=submit]').prop('disabled', false);
-
-        }
-    });
-
-    return false // avoid to execute the actual submit of the form.
-});
+// $("#mainForm").submit(function (e) {
+//     e.preventDefault();
+//     $(this).find(':input[type=submit]').prop('disabled', true);
+//     var form = $(this);
+//     var url = form.attr('action');
+//     let options = {
+//         style: 'circle',
+//         title: 'Success',
+//         message: 'Loan Added Successfully',
+//         position: 'top-right',
+//         type: 'success',
+//         timeout: 5000
+//     };
+//     let error = {
+//         style: 'circle',
+//         title: 'Error',
+//         message: 'Loan Could Not be Entered Successfully',
+//         position: 'top-right',
+//         type: 'danger',
+//         timeout: 5000
+//     };
+//     $.ajax({
+//         type: "POST",
+//         url: url,
+//         data: form.serialize(), // serializes the form's elements.
+//         success: function (data) {
+//             if (data.errors) {
+//                 for (let prop in data.errors) {
+//                     error.message = data.errors[prop][0];
+//                     $('body').pgNotification(error).show();
+//                 }
+//             }
+//             else {
+//                 $('body').pgNotification(options).show();
+//             }
+//             console.log(data); // show response from the php script.
+//             form.find(':input[type=submit]').prop('disabled', false);
+//
+//         }
+//     });
+//
+//     return false // avoid to execute the actual submit of the form.
+// });

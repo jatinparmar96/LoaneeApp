@@ -112,8 +112,8 @@
                                                                 <div class="form-group form-group-default">
                                                                     <label>Card Number</label>
                                                                     <input type="text" class="form-control"
-                                                                           name="card-number"
-                                                                           value="{{old('card-number')}}">
+                                                                           name="card_number"
+                                                                           value="{{old('card_number')}}">
                                                                 </div>
                                                             </div>
 
@@ -121,8 +121,8 @@
                                                                 <div class="form-group form-group-default required">
                                                                     <label>Name</label>
                                                                     <input type="text" class="form-control"
-                                                                           name="loanee-name"
-                                                                           value="{{old('loanee-name')}}" required>
+                                                                           name="loanee_name"
+                                                                           value="{{old('loanee_name')}}" required>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -131,8 +131,8 @@
                                                                 <div class="form-group form-group-default required">
                                                                     <label>Mobile Number</label>
                                                                     <input type="number" class="form-control"
-                                                                           value="{{old('mobile-number')}}"
-                                                                           name="mobile-number"
+                                                                           value="{{old('mobile_number')}}"
+                                                                           name="mobile_number"
                                                                            required>
                                                                 </div>
                                                             </div>

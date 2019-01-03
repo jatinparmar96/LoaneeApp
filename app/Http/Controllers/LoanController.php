@@ -136,9 +136,10 @@ class LoanController extends Controller
     public function store(Request $request)
     {
         Validator::make($request->all(), [
-            'card-number' => 'required',
-            'loanee-name' => 'required',
-            'mobile-number' => 'required|numeric',
+            'card_number' => 'required',
+            'loanee_name' => 'required',
+            'mobile_number' => 'required|numeric',
+            'agent'=>'required',
             'startDate' => 'required|date_format:"d/m/Y"',
             'endDate' => 'required|date_format:"d/m/Y"',
             'loanAmount' => 'required|numeric',
@@ -146,8 +147,6 @@ class LoanController extends Controller
             'grace_period' => 'required',
             'installment' => 'required',
         ])->validate();
-
-        return $request->all();
         $loanUser = new LoanUserController();
         $loan = new Loan();
         $loanStartDate = Carbon::createFromFormat('d/m/Y', Input::get('endDate'));
