@@ -1,14 +1,13 @@
-
-function updateImage(input,id) {
-    let canvas = $('#'+id+'image');
+function updateImage(input, id) {
+    let canvas = $('#' + id + 'image');
     let reader = new FileReader();
     reader.onload = function (e) {
         canvas.attr('src', e.target.result)
             .width(150)
             .height(150);
-        $('#'+id+'image_src').val(canvas.attr('src'));
+        $('#' + id + 'image_src').val(canvas.attr('src'));
     };
-    console.log('#'+id+'image_src');
+    console.log('#' + id + 'image_src');
     reader.readAsDataURL(input.files[0]);
 }
 
@@ -61,10 +60,6 @@ function initBloodHound(data) {
         });
 }
 
-$('#mainForm').submit(function () {
-    $(this).find(':input[type=submit]').prop('disabled', true);
-});
-
 $('.form-control.date').mask('00/00/0000');
 
 function updateStartingDate() {
@@ -75,3 +70,47 @@ function updateStartingDate() {
     let end = endDate.toString('dd/MM/yyyy');
     $('#endDate').val(end);
 }
+
+$("#mainForm").submit(function (e) {
+    e.preventDefault();
+    $(this).find(':input[type=submit]').prop('disabled', true);
+    var form = $(this);
+    var url = form.attr('action');
+    let options = {
+        style: 'circle',
+        title: 'Success',
+        message: 'Loan Added Successfully',
+        position: 'top-right',
+        type: 'success',
+        timeout: 5000
+    };
+    let error = {
+        style: 'circle',
+        title: 'Error',
+        message: 'Loan Could Not be Entered Successfully',
+        position: 'top-right',
+        type: 'danger',
+        timeout: 5000
+    };
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: form.serialize(), // serializes the form's elements.
+        success: function (data) {
+            if (data.errors) {
+                for (let prop in data.errors) {
+                    error.message = data.errors[prop][0];
+                    $('body').pgNotification(error).show();
+                }
+            }
+            else {
+                $('body').pgNotification(options).show();
+            }
+            console.log(data); // show response from the php script.
+            form.find(':input[type=submit]').prop('disabled', false);
+
+        }
+    });
+
+    return false // avoid to execute the actual submit of the form.
+});

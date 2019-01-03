@@ -147,6 +147,7 @@ class LoanController extends Controller
             'installment' => 'required',
         ])->validate();
 
+        return $request->all();
         $loanUser = new LoanUserController();
         $loan = new Loan();
         $loanStartDate = Carbon::createFromFormat('d/m/Y', Input::get('endDate'));

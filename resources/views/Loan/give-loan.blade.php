@@ -769,6 +769,7 @@
         installmentSelector.val(installment);
     }
 
+
     function set_current_val(data, value) {
         switch (data) {
             case 1:
