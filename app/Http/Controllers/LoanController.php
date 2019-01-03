@@ -97,7 +97,7 @@ class LoanController extends Controller
         ])->orderBy('record_date', 'desc')->first();
 
         if ($latest_paid_record) {
-            $latest_paid_date = Carbon::createFromFormat('Y-m-d', $latest_paid_record->record_date)->toFormattedDateString();
+            $latest_paid_date = Carbon::createFromFormat('Y-m-d', $latest_paid_record->record_date)->format('d/m/Y');
         }
         if ($records_latest_pending) {
             $end_date = Carbon::createFromFormat('Y-m-d', $records_latest_pending->record_date)->format('d/m/Y');
