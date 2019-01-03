@@ -100,7 +100,7 @@ class LoanController extends Controller
             $latest_paid_date = Carbon::createFromFormat('Y-m-d', $latest_paid_record->record_date)->toFormattedDateString();
         }
         if ($records_latest_pending) {
-            $end_date = Carbon::createFromFormat('Y-m-d', $records_latest_pending->record_date)->toFormattedDateString();
+            $end_date = Carbon::createFromFormat('Y-m-d', $records_latest_pending->record_date)->format('d/m/Y');
         }
 
         if ($loan->type === 'Room') {

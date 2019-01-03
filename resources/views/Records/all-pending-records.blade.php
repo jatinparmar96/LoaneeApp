@@ -285,11 +285,11 @@
                                     <div class="row d-flex flex-row">
                                         <div class="col-lg-6">
                                             <label>Start Date</label>
-                                            <input type="text" class="form-control date" name="start_date">
+                                            <input type="text" class="form-control date" id="pay_bulk_record_start_date" name="start_date">
                                         </div>
                                         <div class="col-lg-6">
                                             <label>End Date</label>
-                                            <input type="text" class="form-control date" name="end_date">
+                                            <input type="text" class="form-control date" id="pay_bulk_record_end_date" name="end_date">
                                         </div>
                                     </div>
                                 </div>
@@ -371,6 +371,7 @@
 <script src="{{asset('assets/js/datatables.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/form_layouts.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/scripts.js')}}" type="text/javascript"></script>
+<script src={{asset('js/date-hi-IN.js')}}></script>
 <script>
 
     $('#tableWithSearch').DataTable({
@@ -408,18 +409,18 @@
                 }
             },
             {
-                data: 'loan_id',
+                data: getIdAndDate,
                 render: function (data, type, row) {
-                    return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(" +
-                        data + ")' class='toggle-btn btn btn-xs btn-danger'>" +
+                    return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
+                        data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
                         "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
                 }
             },
             {
                 data: 'loan_id',
                 render: function (data, type, row) {
-                    return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(" +
-                        data + ")' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
+                    return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
+                        data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
                         "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
                         "</button > ";
                 }
@@ -438,9 +439,17 @@
     $('.dataTables_length').hide();
     $('.form-control.input-sm').focus();
 
+    function getIdAndDate(data, type, dataToSet) {
+        return data.loan_id + ','+ data.record_date;
+    }
     function openBulkModal(id) {
+        let loan_id = id.split(',')[0];
+        let record_date = Date.parse(id.split(',')[1]).toString('dd/MM/yyyy');
+    //    record_date = record_date.toString('dd/MM/yyyy');
+        console.log(record_date);
         $('#bulkPayModal').modal('show');
-        $('#bulkPayModelForm').attr('action', "{{url('payBulkRecords')}}/" + id);
+        $('#bulkPayModelForm').attr('action', "{{url('payBulkRecords')}}/" + loan_id);
+        $('#pay_bulk_record_start_date').val(record_date);
     }
 
     function openModel(value) {
@@ -448,11 +457,19 @@
         $('#modalForm').attr('action', "{{url('pay-custom-penalty')}}/" + value);
     }
 
-    $('.form-control.date').mask('00/00/0000');
+
+
     $('.form-control.date').datepicker({
-        format: 'dd/mm/yyyy'
+        format:'d/m/yyyy'
     });
 
+    $('#bulkPayModal').on('shown.bs.modal', function () {
+        $('#pay_bulk_record_end_date').focus();
+    });
+    function  fixFunction(start_date) {
+        $('#pay_bulk_record_start_date').val(start_date);
+
+    }
     $('#modelForm').submit(function () {
         $(this).find(':input[type=submit]').prop('disabled', true);
     })

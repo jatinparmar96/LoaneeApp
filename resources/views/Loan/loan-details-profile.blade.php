@@ -192,7 +192,7 @@
                                             <div class="row d-flex flex-column mt-5">
                                                 <button class="btn btn-success text-white toggle-btn"
                                                         data-toggle="modal" data-target="#bulkPayModal"
-                                                        id="btnToggleSlideUpSize">Pay Bulk Records
+                                                        id="btnToggleSlideUpSize" onclick="fixFunction('{{$end_date}}')">Pay Bulk Records
                                                 </button>
                                             </div>
                                         </div>
@@ -286,11 +286,11 @@
                                                     <div class="row d-flex flex-row">
                                                         <div class="col-lg-6">
                                                             <label>Start Date</label>
-                                                            <input type="text" class="form-control date" name="start_date">   
+                                                            <input type="text" class="form-control date" id="pay_bulk_record_start_date" name="start_date">
                                                         </div>
                                                         <div class="col-lg-6">
                                                             <label>End Date</label>
-                                                            <input type="text" class="form-control date" name = "end_date">   
+                                                            <input type="text" class="form-control date" id="pay_bulk_record_end_date" name = "end_date">
                                                         </div>
                                                         </div>     
                                                     </div>
@@ -389,14 +389,23 @@
 
 <script src="{{asset('assets/js/datatables.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/form_layouts.js')}}" type="text/javascript"></script>
+<script src={{asset('js/date-hi-IN.js')}}></script>
 
 <script>
     function showConfirmModal() {
         $('#confirmClose').show();
     }
     $('.form-control.date').datepicker({
-        format: 'dd/mm/yyyy'
-    })
+        format:'d/m/yyyy'
+    });
+
+    $('#bulkPayModal').on('shown.bs.modal', function () {
+        $('#pay_bulk_record_end_date').focus();
+    });
+    function  fixFunction(start_date) {
+        $('#pay_bulk_record_start_date').val(start_date);
+
+    }
 </script>
 
 </body>
