@@ -135,10 +135,29 @@ class LoanPercentageController extends Controller
             ->leftJoin('loan_users as u', 'lp.user_id', 'u.id')
             ->leftJoin('agents as a', 'u.agent_id', 'a.id')
             ->leftJoin('penalty_percentages as p','lp.id','p.loan_id')
-            ->select('lp.start_date','lp.end_date','lp.loan_amount','lp.repay_amount')
+            ->select('lp.id','lp.start_date','lp.end_date','lp.loan_amount','lp.repay_amount')
             ->addSelect('u.name','u.card_number')
             ->addSelect('a.name as agent_name')
             ->addSelect('p.amount as penalty_amount');
         return $query;
+    }
+    function get_records()
+    {
+        $query = DB::table('loan_percentage_records as lrp')
+            ->leftJoin('loan_percentages as lp','lrp.loan_id','lp.id')
+            ->select('lrp.id as record_id');
+        return $query;
+    }
+    function show(Request $request,$id)
+    {
+        $data = $this->query()->where('lp.id',$id)->get();
+        $extra = $this->get_records()
+                ->addSelect(DB::raw("SUM(lrp.record_amount) as pending_amount"))
+                ->where('lp.id',$id)
+                ->where('start')
+                ->get();
+        dd($extra);
+        $data->pending_amount = $extra->pending_amount;
+
     }
 }
