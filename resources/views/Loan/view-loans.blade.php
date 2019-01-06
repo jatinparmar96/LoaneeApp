@@ -361,7 +361,7 @@
                             data: 'id',
                             render: function (data, type, row) {
                                 return "<div class='btn-group'>" +
-                                    "<a href=view-LoanDetails/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
+                                    "<a href=loan_percentage_show/" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
                                     "<i class='fa fa-eye'></i>" +
                                     "</button> </div>";
                             }

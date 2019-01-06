@@ -59,7 +59,8 @@ Route::middleware('auth')->group(function(){
     Route::get('room_list','LoanRoomController@list')->name('list-room');
     Route::get('pending_list','RecordController@pending_list')->name('pending_list');
 
-    Route::get('test_check/{id}','LoanPercentageController@show');
+    //Loan Profile Page
+    Route::get('loan_percentage_show/{id}','LoanPercentageController@show');
 
     Route::get('/add-Record','RecordController@showRecordView')->name('showRecordView');
     Route::get('/add-BulkRecord','RecordController@showBulkRecordView')->name('showBulkRecordView');

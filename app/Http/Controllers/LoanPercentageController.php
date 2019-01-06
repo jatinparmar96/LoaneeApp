@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\LoanPercentage;
 use App\LoanPercentageRecord;
+use App\PenaltyPercentage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -134,30 +135,64 @@ class LoanPercentageController extends Controller
         $query = DB::table('loan_percentages as lp')
             ->leftJoin('loan_users as u', 'lp.user_id', 'u.id')
             ->leftJoin('agents as a', 'u.agent_id', 'a.id')
-            ->leftJoin('penalty_percentages as p','lp.id','p.loan_id')
-            ->select('lp.id','lp.start_date','lp.end_date','lp.loan_amount','lp.repay_amount')
-            ->addSelect('u.name','u.card_number')
+            ->leftJoin('penalty_percentages as p', 'lp.id', 'p.loan_id')
+            ->select('lp.id', 'lp.start_date', 'lp.end_date', 'lp.loan_amount', 'lp.repay_amount')
+            ->addSelect('u.name', 'u.card_number', 'u.mobile_no')
             ->addSelect('a.name as agent_name')
             ->addSelect('p.amount as penalty_amount');
         return $query;
     }
+
+    function show(Request $request, $id)
+    {
+        $data = $this->query()->where('lp.id', $id)->first();
+        $total_today = LoanPercentageRecord::where('loan_id', $id)
+            ->where('paid', false)
+            ->where('record_date', '<=', Carbon::today())
+            ->pluck('record_amount')->sum();
+        $total = LoanPercentageRecord::where('loan_id', $id)
+            ->where('paid', false)
+            ->pluck('record_amount')->sum();
+        $next_payment_date = LoanPercentageRecord::where('loan_id', $id)
+            ->where('paid', false)
+            ->orderBy('record_date', 'asc')
+            ->first();
+        $last_paid_date = LoanPercentageRecord::where('loan_id', $id)
+            ->where('paid', true)
+            ->orderBy('record_date', 'desc')
+            ->first();
+        if ($last_paid_date) {
+            $data->last_paid_date = Carbon::createFromFormat('Y-m-d', $last_paid_date->latest)
+                ->format('d/m/Y');
+        } else {
+            $data->last_paid_date = "No Last Payment";
+        }
+
+        if ($next_payment_date) {
+            $data->next_payment_date = Carbon::createFromFormat('Y-m-d', $next_payment_date->record_date)
+                ->format('d/m/Y');
+        } else {
+            $data->next_payment_date = "No Payments Remaining";
+        }
+
+        $data->pending_amount = $total_today;
+        $data->total_pending_amount = $total;
+        $data->penalty = PenaltyPercentage::where('loan_id',$id)
+            ->where('paid',false)
+            ->pluck('amount')->sum();
+        $data->total_amount_remaining = $data->pending_amount + $data->penalty;
+        $data->start_date = Carbon::createFromFormat('Y-m-d', $data->start_date)->format('d/m/Y');
+        $data->end_date = Carbon::createFromFormat('Y-m-d', $data->end_date)->format('d/m/Y');
+
+        return view('Loan-Profile.loan-profile-percentage', compact('data'));
+
+    }
+
     function get_records()
     {
         $query = DB::table('loan_percentage_records as lrp')
-            ->leftJoin('loan_percentages as lp','lrp.loan_id','lp.id')
+            ->leftJoin('loan_percentages as lp', 'lrp.loan_id', 'lp.id')
             ->select('lrp.id as record_id');
         return $query;
-    }
-    function show(Request $request,$id)
-    {
-        $data = $this->query()->where('lp.id',$id)->get();
-        $extra = $this->get_records()
-                ->addSelect(DB::raw("SUM(lrp.record_amount) as pending_amount"))
-                ->where('lp.id',$id)
-                ->where('start')
-                ->get();
-        dd($extra);
-        $data->pending_amount = $extra->pending_amount;
-
     }
 }
