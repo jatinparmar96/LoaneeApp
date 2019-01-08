@@ -76,11 +76,11 @@
                         <div class="row">
                             <div class="col-lg-3">
                                 <div class="row d-flex flex-column mt-5">
-                                    <h6>Card Number</h6>
-                                    <h2 class="m-0 semi-bold">{{$data->card_number}}</h2>
+                                    <h6>Address</h6>
+                                    <h2 class="m-0 semi-bold">{{$data->building_name}}, {{$data->room_no}}</h2>
                                 </div>
                             </div>
-
+`
                             <div class="col-lg-3">
                                 <div class="row d-flex flex-column mt-5">
                                     <h6>Agent</h6>

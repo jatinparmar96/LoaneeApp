@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Agent;
 use App\LoanRoom;
 use App\LoanRoomRecord;
+use App\PenaltyRoom;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -114,5 +115,67 @@ class LoanRoomController extends Controller
             ->select('lr.*')
             ->addSelect('a.name as agent_name');
         return $query;
+    }
+
+    function show(Request $request, $id)
+    {
+        $data = $this->query()->where('lr.id', $id)->first();
+        $total_today = LoanRoomRecord::where('loan_id', $id)
+            ->where('paid', false)
+            ->where('record_date', '<=', Carbon::today())
+            ->pluck('record_amount')->sum();
+        $total = LoanRoomRecord::where('loan_id', $id)
+            ->where('paid', false)
+            ->pluck('record_amount')->sum();
+        $next_payment_date = LoanRoomRecord::where('loan_id', $id)
+            ->where('paid', false)
+            ->orderBy('record_date', 'asc')
+            ->first();
+        $last_paid_date = LoanRoomRecord::where('loan_id', $id)
+            ->where('paid', true)
+            ->orderBy('record_date', 'desc')
+            ->first();
+        if ($last_paid_date) {
+            $data->last_paid_date = Carbon::createFromFormat('Y-m-d', $last_paid_date->latest)
+                ->format('d/m/Y');
+        } else {
+            $data->last_paid_date = "No Last Payment";
+        }
+
+        if ($next_payment_date) {
+            $data->next_payment_date = Carbon::createFromFormat('Y-m-d', $next_payment_date->record_date)
+                ->format('d/m/Y');
+        } else {
+            $data->next_payment_date = "No Payments Remaining";
+        }
+
+        $data->pending_amount = $total_today;
+        $data->total_pending_amount = $total;
+        $data->penalty = PenaltyRoom::where('loan_id', $id)
+            ->where('paid', false)
+            ->pluck('amount')->sum();
+        $data->total_amount_remaining = $data->pending_amount + $data->penalty;
+        $data->start_date = Carbon::createFromFormat('Y-m-d', $data->start_date)->format('d/m/Y');
+        $data->end_date = Carbon::createFromFormat('Y-m-d', $data->end_date)->format('d/m/Y');
+//        dd($data);
+        return view('Loan-Profile.loan-profile-room', compact('data'));
+
+    }
+
+    function get_records()
+    {
+        $query = DB::table('loan_percentage_records as lrp')
+            ->leftJoin('loan_percentages as lp', 'lrp.loan_id', 'lr.id')
+            ->select('lrp.id as record_id');
+        return $query;
+    }
+
+    function close_card(Request $request, $id)
+    {
+        PenaltyRoom::where('loan_id', $id)->delete();
+        LoanRoomRecord::where('loan_id', $id)->delete();
+        LoanRoom::where('id', $id)->delete();
+        return redirect()->route('viewLoans');
+
     }
 }

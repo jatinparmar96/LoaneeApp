@@ -36,7 +36,6 @@ Route::middleware('auth')->group(function(){
 
 
 
-
 //Loan Routes
     Route::get('/giveLoan', 'LoanController@giveLoan')->name('giveLoanView');
 
@@ -61,6 +60,13 @@ Route::middleware('auth')->group(function(){
 
     //Loan Profile Page
     Route::get('loan_percentage_show/{id}','LoanPercentageController@show');
+    Route::get('loan_room_show/{id}','LoanRoomController@show');
+
+
+//    Route::get('test_check/{id}','');
+    //Loan Close Routes
+    Route::get('close_percentage/{id}','LoanPercentageController@close_card')->name('close_percentage');
+    Route::get('close_room/{id}','LoanRoomController@close_card')->name('close_room');
 
     Route::get('/add-Record','RecordController@showRecordView')->name('showRecordView');
     Route::get('/add-BulkRecord','RecordController@showBulkRecordView')->name('showBulkRecordView');

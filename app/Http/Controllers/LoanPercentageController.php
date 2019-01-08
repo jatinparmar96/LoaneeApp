@@ -119,17 +119,14 @@ class LoanPercentageController extends Controller
         return $record;
     }
 
+    //Get List Of All Active Percentage Based Loans
     public function list(Request $request)
     {
-//        ->where([
-//        ['p.active_status',true],
-//        ['p.paid',false]
-//    ])
         $data = $this->query()->get();
-
         return json_encode($data);
     }
 
+    //General Query for Selecting all percentage based loans
     function query()
     {
         $query = DB::table('loan_percentages as lp')
@@ -177,8 +174,8 @@ class LoanPercentageController extends Controller
 
         $data->pending_amount = $total_today;
         $data->total_pending_amount = $total;
-        $data->penalty = PenaltyPercentage::where('loan_id',$id)
-            ->where('paid',false)
+        $data->penalty = PenaltyPercentage::where('loan_id', $id)
+            ->where('paid', false)
             ->pluck('amount')->sum();
         $data->total_amount_remaining = $data->pending_amount + $data->penalty;
         $data->start_date = Carbon::createFromFormat('Y-m-d', $data->start_date)->format('d/m/Y');
@@ -194,5 +191,14 @@ class LoanPercentageController extends Controller
             ->leftJoin('loan_percentages as lp', 'lrp.loan_id', 'lp.id')
             ->select('lrp.id as record_id');
         return $query;
+    }
+
+    function close_card(Request $request, $id)
+    {
+        PenaltyPercentage::where('loan_id',$id)->delete();
+        LoanPercentageRecord::where('loan_id',$id)->delete();
+        LoanPercentage::where('id',$id)->delete();
+        return redirect()->route('viewLoans');
+
     }
 }
