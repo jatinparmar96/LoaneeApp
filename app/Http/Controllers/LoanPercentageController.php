@@ -140,6 +140,11 @@ class LoanPercentageController extends Controller
         return $query;
     }
 
+    function getPending()
+    {
+        $data = $this->get_pending_records()->get();
+        return $data;
+    }
     function show(Request $request, $id)
     {
         $data = $this->query()->where('lp.id', $id)->first();
@@ -192,7 +197,22 @@ class LoanPercentageController extends Controller
             ->select('lrp.id as record_id');
         return $query;
     }
-
+    function get_pending_records()
+    {
+        $query = DB::table('loan_percentages as lp')
+            ->leftJoin('loan_percentage_records as lrp','lrp.loan_id','lp.id')
+            ->leftJoin('loan_users as u','lp.user_id','u.id')
+            ->leftJoin('penalty_percentages as p','p.loan_id','lp.id')
+            ->select('lrp.id as record_id','lrp.record_date','lrp.record_amount')
+            ->addSelect('lp.id')
+            ->addSelect('u.name','u.card_number')
+            ->addSelect('p.amount as penalty_amount')
+            ->where('lrp.record_date','<=',Carbon::today())
+            ->where('lrp.paid',false)
+            ->where('p.paid',false)
+            ->groupBy('lp.id');
+        return $query;
+    }
     function close_card(Request $request, $id)
     {
         PenaltyPercentage::where('loan_id',$id)->delete();

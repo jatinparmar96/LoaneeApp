@@ -100,7 +100,7 @@
                                             <!-- START card -->
                                             <div class="card card-transparent">
                                                 <div class="card-body">
-                                                    <table class="table" id="tableWithSearch"
+                                                    <table class="table" id="days_table"
                                                            style="width: 100%">
                                                         <thead>
                                                         <tr>
@@ -147,7 +147,7 @@
                                             <div class="card card-transparent">
                                                 <div class="card-body">
 
-                                                    <table class="table data-table" id=""
+                                                    <table class="table data-table" id="percentage_table"
                                                            style="width: 100%">
                                                         <thead>
                                                         <tr>
@@ -194,7 +194,7 @@
                                             <div class="card card-transparent">
                                                 <div class="card-body">
 
-                                                    <table class="table data-table" id=""
+                                                    <table class="table data-table" id="room_table"
                                                            style="width: 100%">
                                                         <thead>
                                                         <tr>
@@ -374,70 +374,149 @@
 <script src={{asset('js/date-hi-IN.js')}}></script>
 <script>
 
-    $('#tableWithSearch').DataTable({
-        destroy:true,
-        ajax: {
-            url: "{{route('pending_list')}}",
-            dataSrc: ''
-        },
-        columns: [
-            {
-                data: 'name'
-            },
-            {
-                data: 'card_number'
-            },
-            {
-                data: 'remaining_amount'
-            },
-            {
-                data: 'penalty_amount'
-            },
-            {
-                data: 'record_date'
-            },
-                @if(Auth::User() -> isAdmin)
-            {
-                data: 'id',
-                render: function (data, type, row) {
-                    return "<div class='btn-group'>" +
-                        "<a href=record/pay-Full-record/" + data +
-                        "> <button type='button' class='btn btn-xs btn-success'> " +
-                        "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
-                        "</button></a> " +
-                        "</div>"
-                }
-            },
-            {
-                data: getIdAndDate,
-                render: function (data, type, row) {
-                    return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
-                        data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
-                        "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
-                }
-            },
-            {
-                data: 'loan_id',
-                render: function (data, type, row) {
-                    return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
-                        data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
-                        "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
-                        "</button > ";
-                }
-            },
-                @endif
-            {
-                data: 'loan_id',
-                render: function (data, type, row) {
-                    return "<a href='view-LoanDetails/" + data + "'>" +
-                        "  <i class='fa fa-eye red fs-15'></i>" +
-                        "</a> ";
-                }
-            }
-        ]
+    $(document).ready(function () {
+        initializeDaysDatatable();
+        initializePercentageDatatable();
+        // initializePercentageDatatables();
+        //initializeRoomDatatables();
+
+        $('.form-control.input-sm').focus();
     });
-    $('.dataTables_length').hide();
-    $('.form-control.input-sm').focus();
+    function initializeDaysDatatable()
+    {
+        $('#days_table').DataTable({
+            destroy:true,
+            ajax: {
+                url: "{{route('pending_list')}}",
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    data: 'name'
+                },
+                {
+                    data: 'card_number'
+                },
+                {
+                    data: 'remaining_amount'
+                },
+                {
+                    data: 'penalty_amount'
+                },
+                {
+                    data: 'record_date'
+                },
+                    @if(Auth::User() -> isAdmin)
+                {
+                    data: 'id',
+                    render: function (data, type, row) {
+                        return "<div class='btn-group'>" +
+                            "<a href=record/pay-Full-record/" + data +
+                            "> <button type='button' class='btn btn-xs btn-success'> " +
+                            "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button></a> " +
+                            "</div>"
+                    }
+                },
+                {
+                    data: getIdAndDate,
+                    render: function (data, type, row) {
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
+                            data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
+                            "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
+                    }
+                },
+                {
+                    data: 'loan_id',
+                    render: function (data, type, row) {
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
+                            data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
+                            "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button > ";
+                    }
+                },
+                    @endif
+                {
+                    data: 'loan_id',
+                    render: function (data, type, row) {
+                        return "<a href='view-LoanDetails/" + data + "'>" +
+                            "  <i class='fa fa-eye red fs-15'></i>" +
+                            "</a> ";
+                    }
+                }
+            ]
+        });
+        $('.dataTables_length').hide();
+        $('.form-control.input-sm').focus();
+    }
+
+    function initializePercentageDatatable()
+    {
+        $('#percentage_table').DataTable({
+            destroy:true,
+            ajax: {
+                url: "{{route('pending_percentage_records')}}",
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    data: 'name'
+                },
+                {
+                    data: 'card_number'
+                },
+                {
+                    data: 'record_amount'
+                },
+                {
+                    data: 'penalty_amount'
+                },
+                {
+                    data: 'record_date'
+                },
+                    @if(Auth::User() -> isAdmin)
+                {
+                    data: 'id',
+                    render: function (data, type, row) {
+                        return "<div class='btn-group'>" +
+                            "<a href=record/pay-Full-record/" + data +
+                            "> <button type='button' class='btn btn-xs btn-success'> " +
+                            "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button></a> " +
+                            "</div>"
+                    }
+                },
+                {
+                    data: getIdAndDate,
+                    render: function (data, type, row) {
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
+                            data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
+                            "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
+                    }
+                },
+                {
+                    data: 'loan_id',
+                    render: function (data, type, row) {
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
+                            data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
+                            "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button > ";
+                    }
+                },
+                    @endif
+                {
+                    data: 'loan_id',
+                    render: function (data, type, row) {
+                        return "<a href='view-LoanDetails/" + data + "'>" +
+                            "  <i class='fa fa-eye red fs-15'></i>" +
+                            "</a> ";
+                    }
+                }
+            ]
+        });
+        $('.dataTables_length').hide();
+        $('.form-control.input-sm').focus();
+    }
 
     function getIdAndDate(data, type, dataToSet) {
         return data.loan_id + ','+ data.record_date;
