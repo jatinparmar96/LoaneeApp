@@ -45,7 +45,7 @@ class RecordController extends Controller
         }
         $record = $records->last();
         if ($record) {
-            $this->updatePenalty($id, $record);
+             $this->updatePenalty($id, $record);
         }
         return redirect()->back()->with(['success', 'Bulk Record Updated Successfully']);
     }

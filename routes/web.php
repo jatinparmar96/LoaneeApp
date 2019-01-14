@@ -63,13 +63,14 @@ Route::middleware('auth')->group(function(){
     Route::get('loan_room_show/{id}','LoanRoomController@show');
 
 
-    Route::get('test_check','LoanPercentageController@getPending');
+    Route::get('test_check','LoanRoomController@get_pending_records');
     //Loan Close Routes
     Route::get('close_percentage/{id}','LoanPercentageController@close_card')->name('close_percentage');
     Route::get('close_room/{id}','LoanRoomController@close_card')->name('close_room');
 
     //Loan All Pending Records Routes
     Route::get('pending_percentage_records','LoanPercentageController@getPending')->name('pending_percentage_records');
+    Route::get('pending_room_records','LoanRoomController@get_pending_records')->name('pending_room_records');
 
     Route::get('/add-Record','RecordController@showRecordView')->name('showRecordView');
     Route::get('/add-BulkRecord','RecordController@showBulkRecordView')->name('showBulkRecordView');

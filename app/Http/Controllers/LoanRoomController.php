@@ -162,10 +162,25 @@ class LoanRoomController extends Controller
 
     }
 
+    public function get_pending_records()
+    {
+        $data = $this->get_records()
+            ->addSelect('lrp.*')
+            ->addSelect('lr.id as loan_id')
+            ->addSelect('pr.amount as penalty_amount')
+            ->addSelect('lr.*')
+            ->addSelect('a.name as agent_name')
+            ->where('lrp.record_date','<=',Carbon::today())
+            ->groupBy('lr.id')->get();
+
+        return json_encode($data);
+    }
     function get_records()
     {
-        $query = DB::table('loan_percentage_records as lrp')
-            ->leftJoin('loan_percentages as lp', 'lrp.loan_id', 'lr.id')
+        $query = DB::table('loan_room_records as lrp')
+            ->leftJoin('loan_rooms as lr', 'lrp.loan_id', 'lr.id')
+            ->leftJoin('penalty_rooms as pr','pr.loan_id','lr.id')
+            ->leftJoin('agents as a','a.id','lr.agent_id')
             ->select('lrp.id as record_id');
         return $query;
     }
@@ -176,6 +191,5 @@ class LoanRoomController extends Controller
         LoanRoomRecord::where('loan_id', $id)->delete();
         LoanRoom::where('id', $id)->delete();
         return redirect()->route('viewLoans');
-
     }
 }

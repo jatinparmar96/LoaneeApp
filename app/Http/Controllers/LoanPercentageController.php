@@ -204,7 +204,7 @@ class LoanPercentageController extends Controller
             ->leftJoin('loan_users as u','lp.user_id','u.id')
             ->leftJoin('penalty_percentages as p','p.loan_id','lp.id')
             ->select('lrp.id as record_id','lrp.record_date','lrp.record_amount')
-            ->addSelect('lp.id')
+            ->addSelect('lp.id as loan_id')
             ->addSelect('u.name','u.card_number')
             ->addSelect('p.amount as penalty_amount')
             ->where('lrp.record_date','<=',Carbon::today())

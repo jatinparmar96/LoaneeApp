@@ -199,7 +199,8 @@
                                                         <thead>
                                                         <tr>
                                                             <th style="width: 20%;">User Name</th>
-                                                            <th style="width: 5%;">Card Number</th>
+                                                            <th style="width: 5%;">Building Name</th>
+                                                            <th style="width: 5%;">Room No</th>
                                                             <th style="width: 7%;">Amount</th>
                                                             <th style="width: 7%;">Penalty_amount</th>
                                                             <th style="width: 10%;">Record Date</th>
@@ -377,6 +378,7 @@
     $(document).ready(function () {
         initializeDaysDatatable();
         initializePercentageDatatable();
+        initializeRoomDatatable();
         // initializePercentageDatatables();
         //initializeRoomDatatables();
 
@@ -507,7 +509,78 @@
                 {
                     data: 'loan_id',
                     render: function (data, type, row) {
-                        return "<a href='view-LoanDetails/" + data + "'>" +
+                        return "<a href='loan_percentage_show/" + data + "'>" +
+                            "  <i class='fa fa-eye red fs-15'></i>" +
+                            "</a> ";
+                    }
+                }
+            ]
+        });
+        $('.dataTables_length').hide();
+        $('.form-control.input-sm').focus();
+    }
+
+    function initializeRoomDatatable()
+    {
+        $('#room_table').DataTable({
+            destroy:true,
+            ajax: {
+                url: "{{route('pending_room_records')}}",
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    data: 'name'
+                },
+                {
+                    data: 'building_name'
+                },
+                {
+                    data: 'room_no'
+                },
+                {
+                    data: 'record_amount'
+                },
+                {
+                    data: 'penalty_amount'
+                },
+                {
+                    data: 'record_date'
+                },
+                    @if(Auth::User() -> isAdmin)
+                {
+                    data: 'id',
+                    render: function (data, type, row) {
+                        return "<div class='btn-group'>" +
+                            "<a href=record/pay-Full-record/" + data +
+                            "> <button type='button' class='btn btn-xs btn-success'> " +
+                            "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button></a> " +
+                            "</div>"
+                    }
+                },
+                {
+                    data: getIdAndDate,
+                    render: function (data, type, row) {
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
+                            data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
+                            "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
+                    }
+                },
+                {
+                    data: 'loan_id',
+                    render: function (data, type, row) {
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
+                            data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
+                            "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button > ";
+                    }
+                },
+                    @endif
+                {
+                    data: 'loan_id',
+                    render: function (data, type, row) {
+                        return "<a href='loan_room_show/" + data + "'>" +
                             "  <i class='fa fa-eye red fs-15'></i>" +
                             "</a> ";
                     }

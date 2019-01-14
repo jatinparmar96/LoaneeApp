@@ -73,7 +73,6 @@ class LoanController extends Controller
     }
 
     //Loan Details
-
     public function LoanDetails(Request $request, $id)
     {
         $latest_paid_date = 'No Last Payment';
@@ -84,8 +83,8 @@ class LoanController extends Controller
         $user = $loan->getUser()->first();
         $agent = $user->getAgent()->first();
         $records = LoanRecord::where('loan_id', $id)->getPending();
-        $current_pending_amount = $records->where('record_date','<=',Carbon::today())->pluck('remaining_amount')->sum();
-        $records_amount = LoanRecord::where('loan_id',$id)->getPending()->pluck('remaining_amount')->sum();
+        $current_pending_amount = $records->where('record_date', '<=', Carbon::today())->pluck('remaining_amount')->sum();
+        $records_amount = LoanRecord::where('loan_id', $id)->getPending()->pluck('remaining_amount')->sum();
         $records_latest_pending = $records->first();
         $loan_start_date = $loan->start_date;
         $loan_end_date = $loan->end_date;
@@ -139,7 +138,7 @@ class LoanController extends Controller
             'card_number' => 'required',
             'loanee_name' => 'required',
             'mobile_number' => 'required|numeric',
-            'agent'=>'required',
+            'agent' => 'required',
             'startDate' => 'required|date_format:"d/m/Y"',
             'endDate' => 'required|date_format:"d/m/Y"',
             'loanAmount' => 'required|numeric',
@@ -281,7 +280,6 @@ class LoanController extends Controller
     {
         $count = 0;
         $repayAmount = $loan->repay_amount;
-
         $start_date = Carbon::createFromFormat('m/d/Y', Input::get('endDate'));
         $records = [];
         $month = $loan->lending_period;
@@ -292,7 +290,6 @@ class LoanController extends Controller
             $records[$count] = $this->recordCreator($loan, $start_date, $amount);
             $count++;
             $start_date->addMonth();
-
         }
         return $loan;
     }
@@ -313,7 +310,6 @@ class LoanController extends Controller
             } else {
                 $extend_date->addMonth();
             }
-
         }
         $record = LoanRecord::where('loan_id', $id)->getPending()->orderBy('record_date', 'asc')->first();
         if ($record) {
@@ -329,6 +325,23 @@ class LoanController extends Controller
         return json_encode($data);
     }
 
+    function get_records()
+    {
+        $query = DB::table('loan_records as lr')
+            ->leftJoin('loans as l', 'l.id', '=', 'lr.loan_id')
+            ->leftJoin('pentalties as p', 'l.id', 'p.loan_id')
+            ->leftJoin('loan_users as u', 'u.id', 'l.user_id')
+            ->select('l.*')
+            ->addSelect(DB::raw("SUM(lr.record_amount) as pending_amount"))
+            ->addSelect('p.amount as penalty_amount')
+            ->addSelect('u.name', 'u.card_number')
+            ->where('lr.record_date', '<=', Carbon::today())
+            ->where('lr.paid', false)
+            ->where('p.paid', false)
+            ->groupBy('lr.loan_id');
+        return $query;
+    }
+
     function query()
     {
         $query = DB::table('loans as l')
@@ -336,23 +349,6 @@ class LoanController extends Controller
             ->leftJoin('agents as a', 'u.agent_id', 'a.id')
             ->select('l.*')
             ->addSelect('u.name', 'u.card_number');
-        return $query;
-    }
-
-    function get_records()
-    {
-        $query = DB::table('loan_records as lr')
-            ->leftJoin('loans as l', 'l.id', '=', 'lr.loan_id')
-            ->leftJoin('pentalties as p','l.id','p.loan_id')
-            ->leftJoin('loan_users as u','u.id','l.user_id')
-            ->select('l.*')
-            ->addSelect(DB::raw("SUM(lr.record_amount) as pending_amount"))
-            ->addSelect('p.amount as penalty_amount')
-            ->addSelect('u.name','u.card_number')
-            ->where('lr.record_date','<=',Carbon::today())
-            ->where('lr.paid',false)
-            ->where('p.paid',false)
-            ->groupBy('lr.loan_id');
         return $query;
     }
 }
