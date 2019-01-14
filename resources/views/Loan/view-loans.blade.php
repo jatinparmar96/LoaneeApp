@@ -364,7 +364,7 @@
                                     "<a href=loan_percentage_show/" +
                                     "" + data + "> <button type='button' class='btn btn-xs btn-success'> " +
                                     "<i class='fa fa-eye'></i>" +
-                                    "</button> </div>";
+                                    "</button></a> </div>";
                             }
                         }
 

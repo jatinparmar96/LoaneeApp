@@ -6,6 +6,7 @@ use App\Agent;
 use App\Loan;
 use App\LoanRecord;
 use App\LoanUser;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use PHPUnit\Util\Json;
@@ -116,7 +117,7 @@ class LoanUserController extends Controller
             $loan->card_number = $user->card_number;
             $loan->user_name = $user->name;
             $loan->mobile = $user->mobile_no;
-            $amount = LoanRecord::where('loan_id',$loan->id)->getPending()->pluck('remaining_amount')->sum();
+            $amount = LoanRecord::where('loan_id',$loan->id)->where('record_date','<=',Carbon::today())->getPending()->pluck('remaining_amount')->sum();
             if($loan->type === 'Room')
             {
                 $penalty_amount = Pentalty::where('loan_id',$loan->id)->getPending()->pluck('amount')->sum();

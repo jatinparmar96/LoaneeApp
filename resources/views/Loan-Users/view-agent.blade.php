@@ -92,6 +92,7 @@
                                                     <th>Mobile Number</th>
                                                     <th>Pending Amount</th>
                                                     <th>Penalty</th>
+                                                    <th>View Loan</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -191,7 +192,16 @@
                     {data:'user_name'},
                     {data:'mobile'},
                     {data:'pending_amount'},
-                    {data:'penalty'}
+                    {data:'penalty'},
+                    {
+                        data:'id',
+                        render:function (data,row,type) {
+                            return "<div class='btn-group'>" +
+                                "<a href=\"{{url('view-LoanDetails')}}/"+ data + "\"> <button type='button' class='btn btn-xs btn-success'> " +
+                                "<i class='fa fa-eye'></i>" +
+                                "</button></a> </div>";
+                        }
+                    }
                 ]
             }
         );

@@ -21,9 +21,9 @@
 
         <ul class="menu-items">
             <li>
-            <a href="{{ route('dashboard') }}">
-            <span class="title">Dashboard</span>   
-                    </a>
+                <a href="{{ route('dashboard') }}">
+                    <span class="title">Dashboard</span>
+                </a>
             </li>
             <li>
                 <a href="javascript:;"><span class="title">Users</span>
@@ -40,41 +40,34 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="javascript:;"><span class="title">Payments</span>
-                    <span class=" arrow"></span></a>
-                <span class="icon-thumbnail"><i class="pg-alt_menu"></i></span>
-                <ul class="sub-menu">
-
-                    @if(Auth::User()->isAdmin)
-                        <li class="">
-                            <a href="{{route('giveLoanView')}}">Give Payments</a>
-                            <span class="icon-thumbnail">gl</span>
-                        </li>
-                    @endif
-                    <li class="">
-                        <a href="{{route('viewLoans')}}">View Payments</a>
-                        <span class="icon-thumbnail">vl</span>
-                    </li>
-                </ul>
+            @if(Auth::User()->isAdmin)
+                <li class="">
+                    <a href="{{route('giveLoanView')}}">Give Payments</a>
+                    <span class="icon-thumbnail">gl</span>
+                </li>
+            @endif
+            <li class="">
+                <a href="{{route('viewLoans')}}">View Payments</a>
+                <span class="icon-thumbnail">vl</span>
             </li>
-            <li>
-                <a href="javascript:;"><span class="title">Records</span>
-                    <span class=" arrow"></span></a>
-                <span class="icon-thumbnail"><i class="pg-note"></i></span>
-                <ul class="sub-menu">
-                    <li class="">
-                        <a href="{{route('todaysRecords')}}">View Today's Records</a>
-                        <span class="icon-thumbnail">vr</span>
-                    </li>
-                    <li class="">
-                        <a href="{{route('showRecordView')}}">Show all Pending Records</a>
-                        <span class="icon-thumbnail">ar</span>
-                    </li>
-
-
-                </ul>
+            <li class="">
+                <a href="{{route('showRecordView')}}">Show all Pending Records</a>
+                <span class="icon-thumbnail">ar</span>
             </li>
+            {{--<li>--}}
+                {{--<a href="javascript:;"><span class="title">Records</span>--}}
+                    {{--<span class=" arrow"></span></a>--}}
+                {{--<span class="icon-thumbnail"><i class="pg-note"></i></span>--}}
+                {{--<ul class="sub-menu">--}}
+                    {{--<li class="">--}}
+                        {{--<a href="{{route('todaysRecords')}}">View Today's Records</a>--}}
+                        {{--<span class="icon-thumbnail">vr</span>--}}
+                    {{--</li>--}}
+                    {{----}}
+
+
+                {{--</ul>--}}
+            {{--</li>--}}
 
             <!--   <li>
                   <a href="javascript:;"><span class="title">Penalty</span>
@@ -108,26 +101,25 @@
                 </ul>
             </li> -->
 
-           
 
             @if(Auth::User())
                 <li>
                     <a href="{{route('changePasswordView')}}">Change Password</a>
                 </li>
             @endif
-             @if(Auth::User()->isAdmin)
+            @if(Auth::User()->isAdmin)
                 <li>
-                      <a href="{{ route('register') }}">CreateUser</a>
+                    <a href="{{ route('register') }}">CreateUser</a>
                 </li>
             @endif
             @if(Auth::User()->isAdmin)
                 <li>
-                      <a href="{{ route('startBackup') }}">Backup</a>
+                    <a href="{{ route('startBackup') }}">Backup</a>
                 </li>
             @endif
             @if(Auth::User()->isAdmin)
                 <li>
-                      <a href="{{ route('RestoreView') }}">Restore</a>
+                    <a href="{{ route('RestoreView') }}">Restore</a>
                 </li>
             @endif
             @if(Auth::User())
