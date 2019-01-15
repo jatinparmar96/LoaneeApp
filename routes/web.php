@@ -83,7 +83,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/record/pay-Full-record/{id}','RecordController@payFullRecord')->name('payFullRecord');
     Route::get('/record/pay-Half-record/{id}','RecordController@payHalfRecord')->name('payHalfRecord');
 
-
+    //Loan Bulk Pay Amount Routes
+    Route::get('pay_bulk_records_amount/{id}','RecordController@pay_bulk_records_amount')->name('pay_bulk_records_amount');
 
     Route::get('create-penalty','PenaltyController@viewPenalty')->name('penalty');
     Route::get('getPenaltiesByLoan/{id}','PenaltyController@getPenaltiesByLoan')->name('getPenaltiesByLoan');

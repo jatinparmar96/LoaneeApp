@@ -286,11 +286,13 @@
                                     <div class="row d-flex flex-row">
                                         <div class="col-lg-6">
                                             <label>Start Date</label>
-                                            <input type="text" class="form-control date" id="pay_bulk_record_start_date" name="start_date">
+                                            <input type="text" class="form-control date" id="pay_bulk_record_start_date"
+                                                   name="start_date">
                                         </div>
                                         <div class="col-lg-6">
                                             <label>End Date</label>
-                                            <input type="text" class="form-control date" id="pay_bulk_record_end_date" name="end_date">
+                                            <input type="text" class="form-control date" id="pay_bulk_record_end_date"
+                                                   name="end_date">
                                         </div>
                                     </div>
                                 </div>
@@ -300,8 +302,6 @@
                         <button class="btn btn-primary" type="submit">Submit</button>
                     </form>
                 </div>
-
-
             </div>
         </div>
 
@@ -312,7 +312,7 @@
 <!-- END COPYRIGHT -->
 </div>
 <!-- END PAGE CONTENT WRAPPER -->
-</div>
+
 <!-- END PAGE CONTAINER -->
 <!--START QUICKVIEW -->
 
@@ -384,10 +384,10 @@
 
         $('.form-control.input-sm').focus();
     });
-    function initializeDaysDatatable()
-    {
+
+    function initializeDaysDatatable() {
         $('#days_table').DataTable({
-            destroy:true,
+            destroy: true,
             ajax: {
                 url: "{{route('pending_list')}}",
                 dataSrc: ''
@@ -423,18 +423,18 @@
                 {
                     data: getIdAndDate,
                     render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\"" +
                             data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
-                            "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
+                            "Bulk <i class='fa fa-arrow-circle-right'></i></button>";
                     }
                 },
                 {
                     data: 'loan_id',
                     render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
-                            data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
-                            "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button > ";
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick=\"openModel('" +
+                            data + "')\" class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
+                            "Penalty <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button>";
                     }
                 },
                     @endif
@@ -452,10 +452,9 @@
         $('.form-control.input-sm').focus();
     }
 
-    function initializePercentageDatatable()
-    {
+    function initializePercentageDatatable() {
         $('#percentage_table').DataTable({
-            destroy:true,
+            destroy: true,
             ajax: {
                 url: "{{route('pending_percentage_records')}}",
                 dataSrc: ''
@@ -491,7 +490,7 @@
                 {
                     data: getIdAndDate,
                     render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\"" +
                             data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
                             "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
                     }
@@ -499,10 +498,10 @@
                 {
                     data: 'loan_id',
                     render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
-                            data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick=\"openModel('" +
+                            data + "')\" class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
                             "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button > ";
+                            "</button> ";
                     }
                 },
                     @endif
@@ -520,10 +519,9 @@
         $('.form-control.input-sm').focus();
     }
 
-    function initializeRoomDatatable()
-    {
+    function initializeRoomDatatable() {
         $('#room_table').DataTable({
-            destroy:true,
+            destroy: true,
             ajax: {
                 url: "{{route('pending_room_records')}}",
                 dataSrc: ''
@@ -562,7 +560,7 @@
                 {
                     data: getIdAndDate,
                     render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\""+
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\"" +
                             data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
                             "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
                     }
@@ -570,10 +568,10 @@
                 {
                     data: 'loan_id',
                     render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openModel(\'" +
-                            data + "\')' class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
-                            "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button > ";
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick=\"openModel('" +
+                            data + "')\" class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
+                            "Penalty <i class='fa fa-arrow-circle-right'></i>" +
+                            "</button> ";
                     }
                 },
                     @endif
@@ -592,16 +590,16 @@
     }
 
     function getIdAndDate(data, type, dataToSet) {
-        return data.loan_id + ','+ data.record_date;
+        return data.loan_id + ',' + data.record_date;
     }
+
     function openBulkModal(id) {
         let loan_id = id.split(',')[0];
         let record_date = Date.parse(id.split(',')[1]).toString('dd/MM/yyyy');
-    //    record_date = record_date.toString('dd/MM/yyyy');
+        //    record_date = record_date.toString('dd/MM/yyyy');
         console.log(record_date);
         $('#bulkPayModal').modal('show');
         $('#bulkPayModelForm').attr('action', "{{url('payBulkRecords')}}/" + loan_id);
-        $('#pay_bulk_record_start_date').val(record_date);
     }
 
     function openModel(value) {
@@ -610,18 +608,10 @@
     }
 
 
-
     $('.form-control.date').datepicker({
-        format:'d/m/yyyy'
+        format: 'd/m/yyyy'
     });
 
-    $('#bulkPayModal').on('shown.bs.modal', function () {
-        $('#pay_bulk_record_end_date').focus();
-    });
-    function  fixFunction(start_date) {
-        $('#pay_bulk_record_start_date').val(start_date);
-
-    }
     $('#modelForm').submit(function () {
         $(this).find(':input[type=submit]').prop('disabled', true);
     })

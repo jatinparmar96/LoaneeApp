@@ -270,36 +270,81 @@
                              aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <div class="modal-header clearfix text-left">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
-                                                    class="pg-close fs-14"></i>
-                                        </button>
-                                        <h5>Payment <span class="semi-bold">Information</span></h5>
-                                        <p>Fill Details for the Bulk Record</p>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="{{url('payBulkRecords')}}/{{$loan->id}}" role="form"
-                                              autocomplete="off">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                    <div class="row d-flex flex-row">
-                                                        <div class="col-lg-6">
-                                                            <label>Start Date</label>
-                                                            <input type="text" class="form-control date" id="pay_bulk_record_start_date" name="start_date">
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <label>End Date</label>
-                                                            <input type="text" class="form-control date" id="pay_bulk_record_end_date" name = "end_date">
-                                                        </div>
-                                                        </div>     
-                                                    </div>
+                                    <div class="panel">
+                                        <ul class="nav nav-tabs nav-tabs-simple">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#bulk_pay_date">Date</a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" href="#bulk_pay_amount">Amount</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="bulk_pay_date">
+                                                <div class="modal-header clearfix text-left">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
+                                                                class="pg-close fs-14"></i>
+                                                    </button>
+                                                    <h5>Payment <span class="semi-bold">Information</span></h5>
+                                                    <p>Fill Details for the Bulk Record</p>
                                                 </div>
+                                                <div class="modal-body">
+                                                    <form action="{{url('payBulkRecords')}}/{{$loan->id}}" role="form"
+                                                          autocomplete="off">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <div class="row d-flex flex-row">
+                                                                        <div class="col-lg-6">
+                                                                            <label>Start Date</label>
+                                                                            <input type="text" class="form-control date" id="pay_bulk_record_start_date" name="start_date">
+                                                                        </div>
+                                                                        <div class="col-lg-6">
+                                                                            <label>End Date</label>
+                                                                            <input type="text" class="form-control date" id="pay_bulk_record_end_date" name = "end_date">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        <button class="btn btn-primary" type="submit">Submit</button>
+                                                    </form>
+                                                </div>
+
                                             </div>
-                                            <div class="clearfix"></div>
-                                            <button class="btn btn-primary" type="submit">Submit</button>
-                                        </form>
+                                            <div class="tab-pane" id="bulk_pay_amount">
+                                                <div class="modal-header clearfix text-left">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
+                                                                class="pg-close fs-14"></i>
+                                                    </button>
+                                                    <h5>Payment <span class="semi-bold">Information</span></h5>
+                                                    <p>Fill Details for the Amount Record</p>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{url('pay_bulk_records_amount')}}/{{$loan->id}}" role="form"
+                                                          autocomplete="off">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <div class="row d-flex flex-row">
+                                                                        <div class="col-lg-6">
+                                                                            <label>Amount</label>
+                                                                            <input type="number" class="form-control" id="pay_bulk_record_amount" name="bulk_record_amount">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        <button class="btn btn-primary" type="submit">Submit</button>
+                                                    </form>
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>

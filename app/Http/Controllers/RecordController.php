@@ -34,6 +34,21 @@ class RecordController extends Controller
         return view('Records.view-today-records');
     }
 
+    public function pay_bulk_records_amount(Request $request, $id)
+    {
+        $amount = $request->get('bulk_record_amount');
+        $records = LoanRecord::where('loan_id', $id)->getPending()->orderBy('record_date', 'asc')->get();
+        foreach ($records as $record) {
+            if ($record->record_amount <= $amount) {
+                $record->paid = true;
+                $record->save();
+            }
+            $amount = $amount - $record->record_amount;
+        };
+        return redirect()->back()->with(['success' => 'Bulk Amount Added Successfully']);
+
+    }
+
     public function payBulkRecords(Request $request, $id)
     {
         $start_date = Carbon::createFromFormat('d/m/Y', $request->get('start_date'))->startOfDay();
@@ -45,9 +60,34 @@ class RecordController extends Controller
         }
         $record = $records->last();
         if ($record) {
-             $this->updatePenalty($id, $record);
+            $this->updatePenalty($id, $record);
         }
         return redirect()->back()->with(['success', 'Bulk Record Updated Successfully']);
+    }
+
+    public function updatePenalty($id, $record)
+    {
+
+        $record_date = $this->createDate($record->record_date);
+        $penalty = Pentalty::where('loan_id', $id)->getPending()->orderBy('penalty_date', 'desc')->first();
+        $penalty_date = $this->createDate($penalty->penalty_date);
+        if ($record->method === 'Daily') {
+            $record_date->addDays(5);
+        } else if ($record->method === 'Weekly') {
+            $record_date->addDays(7);
+        } else {
+            $record_date->addDays(30);
+        }
+        if ($record_date->gte($penalty_date)) {
+            $penalty_date = $record_date;
+            $penalty->penalty_date = $penalty_date;
+            $penalty->save();
+        }
+    }
+
+    function createDate($date)
+    {
+        return Carbon::createFromFormat('Y-m-d', $date);
     }
 
     public function testpayBulkRecords(Request $request)
@@ -74,9 +114,14 @@ class RecordController extends Controller
         return redirect()->route('showRecordView')->with(['success', 'Records Updated Successfully']);
     }
 
-    function createDate($date)
+    function updateLoanStatus($id)
     {
-        return Carbon::createFromFormat('Y-m-d', $date);
+        $records = LoanRecord::where('loan_id', $id)->getPending()->get();
+        $loan = Loan::find($id);
+        if (count($records) == 0) {
+            $loan->paid = true;
+            $loan->save();
+        }
     }
 
     public function getTodayRecords(Request $request)
@@ -122,19 +167,20 @@ class RecordController extends Controller
         $data = $this->query()->get();
         return json_encode($data);
     }
+
     public function query()
     {
         $query = DB::table('loan_records as lr')
             ->leftJoin('loans as l', 'l.id', '=', 'lr.loan_id')
-            ->leftJoin('pentalties as p','l.id','p.loan_id')
-            ->leftJoin('loan_users as u','u.id','l.user_id')
+            ->leftJoin('pentalties as p', 'l.id', 'p.loan_id')
+            ->leftJoin('loan_users as u', 'u.id', 'l.user_id')
             ->select('l.id as loan_id')
-            ->addSelect('lr.record_amount as remaining_amount','lr.record_date')
+            ->addSelect('lr.record_amount as remaining_amount', 'lr.record_date')
             ->addSelect('p.amount as penalty_amount')
-            ->addSelect('u.name','u.card_number')
-            ->where('lr.record_date','<=',Carbon::today())
-            ->where('lr.paid',false)
-            ->where('p.paid',false)
+            ->addSelect('u.name', 'u.card_number')
+            ->where('lr.record_date', '<=', Carbon::today())
+            ->where('lr.paid', false)
+            ->where('p.paid', false)
             ->groupBy('lr.loan_id');
         return $query;
     }
@@ -165,35 +211,5 @@ class RecordController extends Controller
         $this->updatePenalty($loan_id, $record);
         $this->updateLoanStatus($loan_id);
         return redirect()->back()->with(['success' => 'Record Paid Successfully']);
-    }
-
-    function updateLoanStatus($id)
-    {
-        $records = LoanRecord::where('loan_id', $id)->getPending()->get();
-        $loan = Loan::find($id);
-        if (count($records) == 0) {
-            $loan->paid = true;
-            $loan->save();
-        }
-    }
-
-    public function updatePenalty($id, $record)
-    {
-
-        $record_date = $this->createDate($record->record_date);
-        $penalty = Pentalty::where('loan_id', $id)->getPending()->orderBy('penalty_date', 'desc')->first();
-        $penalty_date = $this->createDate($penalty->penalty_date);
-        if ($record->method === 'Daily') {
-            $record_date->addDays(5);
-        } else if ($record->method === 'Weekly') {
-            $record_date->addDays(7);
-        } else {
-            $record_date->addDays(30);
-        }
-        if ($record_date->gte($penalty_date)) {
-            $penalty_date = $record_date;
-            $penalty->penalty_date = $penalty_date;
-            $penalty->save();
-        }
     }
 }
