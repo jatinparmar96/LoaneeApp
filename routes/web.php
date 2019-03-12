@@ -95,13 +95,12 @@ Route::middleware('auth')->group(function () {
     Route::get('pay_single_percentage_record', 'LoanPercentageRecordController@pay_single_record')->name('pay_single_percentage_record');
     Route::get('pay_single_room_record', 'LoanRoomRecordController@pay_single_record')->name('pay_single_room_record');
 
-    /* Payment Bulk Records */
-
-    //Bulk Record Percentage Date
-    Route::get('pay_bulk_percentage_record', 'LoanPercentageRecordController@pay_bulk_record_by_date')->name('pay_bulk_percentage_record');
-    //Bulk Record Room Date
-    Route::get('pay_bulk_room_record', 'LoanRoomRecordController@pay_bulk_record_by_date')->name('pay_bulk_room_record');
-
+    Route::get('create-penalty','PenaltyController@viewPenalty')->name('penalty');
+    Route::get('getPenaltiesByLoan/{id}','PenaltyController@getPenaltiesByLoan')->name('getPenaltiesByLoan');
+    Route::get('payPenalty/{id}','PenaltyController@payPenalty')->name('payPenalty');
+    Route::get('refreshPenalty','PenaltyController@refreshPenalty')->name('refreshPenalty');
+    Route::get('pay-custom-penalty/{id}','PenaltyController@customPenalty')->name('customPenalty');
+    
     Route::prefix('reports')->group(function (){
        Route::get('daily_reports','Report\DailyReportController@get_view')->name('daily_reports');
        Route::get('make_daily_reports/{id?}','Report\DailyReportController@daily_report')->name('make_daily_reports');

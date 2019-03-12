@@ -92,11 +92,14 @@
                                 <div class="card-title">
                                     <h3>Daily Report</h3>
                                 </div>
+                                <div>
+                                <h3><span id="total_daily_amount"></span> </h3>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div>
-                                        <input type="text" class="form-control date" id="daily_date"
+                                        <input autocomplete="off" type="text" class="form-control date" id="daily_date"
                                                name="end_date">
                                     </div>
                                     <div>
@@ -372,7 +375,7 @@
 <script src="{{asset('assets/js/datatables.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/form_layouts.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/scripts.js')}}" type="text/javascript"></script>
-<script src={{asset('js/date-hi-IN.js')}}></script>
+<script src="{{asset('js/date-hi-IN.js')}}"></script>
 
 <script>
     $('.form-control.date').datepicker({
@@ -387,6 +390,7 @@
     }
 
     function initializeDaysDatatable(date='') {
+        let total_amount = 0;
         $('#days_table').DataTable({
             destroy: true,
             ajax: {
@@ -401,18 +405,16 @@
                     data: 'card_number'
                 },
                 {
-                    data: 'amount'
-                },
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<a href='loan_room_show/" + data + "'>" +
-                            "  <i class='fa fa-eye red fs-15'></i>" +
-                            "</a> ";
+                    data: 'amount',
+                    render:function(data,type,row)
+                    {
+                        total_amount+=data;
+                        return data;
                     }
-                }
+                },
             ]
         });
+        
         $('.dataTables_length').hide();
     }
 </script>

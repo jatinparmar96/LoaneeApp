@@ -93,7 +93,7 @@
                                     <h3>Today's Pending Records</h3>
                                 </div>
                             </div>
-                            <div class="card-body">
+                            <div class="card-block scrollable">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class=" container-fluid   container-fixed-lg bg-white">
@@ -114,8 +114,8 @@
                                                                 <th style="width: 5%;">Pay Full</th>
                                                                 <th style="width: 5%;">Pay Bulk</th>
                                                                 <th style="width: 5%;">Pay Penalty</th>
-                                                                <th style="width: 5%;">Loan Details</th>
                                                             @endif
+                                                             <th style="width: 5%;">Loan Details</th>
                                                         </tr>
                                                         </thead>
 
@@ -192,7 +192,7 @@
                                         <div class=" container-fluid   container-fixed-lg bg-white">
                                             <!-- START card -->
                                             <div class="card card-transparent">
-                                                <div class="card-body">
+                                                <div class="card-body ">
 
                                                     <table class="table data-table" id="room_table"
                                                            style="width: 100%">
@@ -411,7 +411,7 @@
                 },
                     @if(Auth::User() -> isAdmin)
                 {
-                    data: 'id',
+                    data: 'loan_id',
                     render: function (data, type, row) {
                         return "<div class='btn-group'>" +
                             "<a href=record/pay-Full-record/" + data +
@@ -447,6 +447,12 @@
                             "</a> ";
                     }
                 }
+            ],
+            columnDefs: [         // see https://datatables.net/reference/option/columns.searchable
+                { 
+                    'searchable'    : false, 
+                    'targets'       : [2,3,4] 
+                },
             ]
         });
         $('.dataTables_length').hide();
@@ -491,7 +497,7 @@
                 {
                     data: getIdAndDate,
                     render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\"" +
+                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkPercentageModal(\"" +
                             data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
                             "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
                     }
@@ -600,21 +606,18 @@
         console.log(record_date);
         $('#bulkPayModal').modal('show');
         $('#pay_bulk_record_start_date').val(record_date);
-
         $('#bulkPayModelForm').attr('action', "{{url('payBulkRecords')}}/" + loan_id);
     }
     $('#bulkPayModal').on('shown.bs.modal',function () {
         $('#pay_bulk_record_end_date').focus();
     });
-
-    function formatDate(input) {
+     function formatDate(input) {
         var datePart = input.match(/\d+/g),
             year = datePart[0], // get only two digits
             month = datePart[1], day = datePart[2];
 
         return day + '/' + month + '/' + year;
     }
-
     function openBulkPercentageModal(id) {
         let loan_id = id.split(',')[0];
         let record_date = Date.parse(id.split(',')[1]).toString('dd/MM/yyyy');

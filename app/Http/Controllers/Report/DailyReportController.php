@@ -25,7 +25,17 @@ class DailyReportController extends Controller
 
         }
         $data = $this->query()->whereDate('lr.updated_at',$date)->get();
-        return json_encode($data);
+        if(count($data) != 0)
+        {
+            $amount = 0;
+            foreach($data as $record)
+            {  
+                $amount+=$record->amount;
+            }
+            $data->total_amount_today = $amount;
+            return json_encode($data);
+        }
+      
 
     }
     function query()
