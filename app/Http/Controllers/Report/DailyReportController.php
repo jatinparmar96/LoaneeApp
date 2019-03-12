@@ -15,6 +15,7 @@ class DailyReportController extends Controller
     }
     public function daily_report(Request $request,$date='')
     {
+        $data = new \stdClass();
         if ($date === '')
         {
             $date = Carbon::today();
@@ -24,17 +25,17 @@ class DailyReportController extends Controller
             $date = Carbon::createFromFormat('d-m-Y',$date)->startOfDay();
 
         }
-        $data = $this->query()->whereDate('lr.updated_at',$date)->get();
-        if(count($data) != 0)
+        $data->records = $this->query()->whereDate('lr.updated_at',$date)->get();
+        if(count($data->records) != 0)
         {
             $amount = 0;
-            foreach($data as $record)
+            foreach($data->records as $record)
             {  
                 $amount+=$record->amount;
             }
             $data->total_amount_today = $amount;
-            return json_encode($data);
         }
+        return json_encode($data);
       
 
     }

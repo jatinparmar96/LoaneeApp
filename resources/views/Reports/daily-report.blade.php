@@ -93,7 +93,7 @@
                                     <h3>Daily Report</h3>
                                 </div>
                                 <div>
-                                <h3><span id="total_daily_amount"></span> </h3>
+                                <h3 >Total Amount: <span id="total_daily_amount"></span> </h3>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -395,7 +395,7 @@
             destroy: true,
             ajax: {
                 url: "{{url('reports/make_daily_reports')}}/"+date,
-                dataSrc: ''
+                dataSrc: 'records'
             },
             columns: [
                 {
@@ -414,7 +414,11 @@
                 },
             ]
         });
-        
+        $.ajax({url: "{{url('reports/make_daily_reports')}}/"+date, success: function(result){
+            let data = JSON.parse(result); 
+            console.log(data.total_amount_today);
+            $('#total_daily_amount').html(data.total_amount_today);
+        }});
         $('.dataTables_length').hide();
     }
 </script>

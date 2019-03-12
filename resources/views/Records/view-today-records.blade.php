@@ -257,8 +257,6 @@
 
         $('#myModal').modal('show');
         $('#modalForm').attr('action','record/pay-Half-record/'+value);
-
-
     }
 </script>
 
