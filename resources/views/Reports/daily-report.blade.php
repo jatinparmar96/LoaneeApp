@@ -412,6 +412,14 @@
                         return data;
                     }
                 },
+                {
+                    data: 'loan_id',
+                    render: function (data, type, row) {
+                        return "<a href='/view-LoanDetails/" + data + "'>" +
+                            "  <i class='fa fa-eye red fs-15'></i>" +
+                            "</a> ";
+                    }
+                }
             ]
         });
         $.ajax({url: "{{url('reports/make_daily_reports')}}/"+date, success: function(result){
