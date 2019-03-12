@@ -20,33 +20,34 @@
     <div class="sidebar-menu">
 
         <ul class="menu-items">
-            <li>
+            <li class="{{Request::is('dashboard')?'active':''}}">
                 <a href="{{ route('dashboard') }}">
                     <span class="title">Dashboard</span>
                 </a>
             </li>
-            <li>
+            <li class="{{Request::is('view-Loanee','viewAgent')?'active open':''}}">
                 <a href="javascript:;"><span class="title">Users</span>
                     <span class=" arrow"></span></a>
                 <span class="icon-thumbnail"><i class="pg-alt_menu"></i></span>
                 <ul class="sub-menu">
-                    <li class="">
+                    <li class="{{Request::is('view-Loanee')?'active':''}}">
                         <a href="{{route('viewLoanee')}}">View Users</a>
                         <span class="icon-thumbnail">vl</span>
                     </li>
-                    <li class="">
+                    <li class="{{Request::is('viewAgent')?'active':''}}">
                         <a href="{{route('viewAgent')}}">View Agents</a>
                         <span class="icon-thumbnail">vl</span>
                     </li>
                 </ul>
             </li>
             @if(Auth::User()->isAdmin)
-                <li class="">
+
+                <li class="{{Request::is('view-Loan')?'active':''}}">
                     <a href="{{route('giveLoanView')}}">Give Payments</a>
                     <span class="icon-thumbnail">gl</span>
                 </li>
             @endif
-            <li class="">
+            <li class="{{Request::is('viewLoans')?'active':''}}">
                 <a href="{{route('viewLoans')}}">View Payments</a>
                 <span class="icon-thumbnail">vl</span>
             </li>
@@ -101,7 +102,9 @@
                 </ul>
             </li> -->
 
-
+            <li>
+                <a href="{{route('daily_reports')}}">Daily Reports</a>
+            </li>
             @if(Auth::User())
                 <li>
                     <a href="{{route('changePasswordView')}}">Change Password</a>

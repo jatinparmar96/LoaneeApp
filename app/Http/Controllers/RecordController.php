@@ -149,8 +149,7 @@ class RecordController extends Controller
         $loans = Loan::all();
         foreach ($loans as $loan) {
             $record = LoanRecord::where([
-                ['loan_id', $loan->id],
-                ['record_date', '<=', $today]
+                ['loan_id', $loan->id]
             ])->getPending()->first();
             if ($record) {
                 $user = $record->getUser()->first();
@@ -188,7 +187,7 @@ class RecordController extends Controller
     public function payHalfRecord($id)
     {
         $record = LoanRecord::find($id);
-        $loan_id = $record->getLoan()->first();
+        $loan_id = $record->getloan()->first();
         $record->remaining_amount = $record->remaining_amount - Input::get('half-price');
         if ($record->remaining_amount == 0) {
             $record->paid = 1;
@@ -205,7 +204,7 @@ class RecordController extends Controller
     public function payFullRecord($id)
     {
         $record = LoanRecord::find($id);
-        $loan_id = $record->getLoan()->first()->id;
+        $loan_id = $id;
         $record->paid = 1;
         $record->save();
         $this->updatePenalty($loan_id, $record);

@@ -335,7 +335,6 @@ class LoanController extends Controller
             ->addSelect(DB::raw("SUM(lr.record_amount) as pending_amount"))
             ->addSelect('p.amount as penalty_amount')
             ->addSelect('u.name', 'u.card_number')
-            ->where('lr.record_date', '<=', Carbon::today())
             ->where('lr.paid', false)
             ->where('p.paid', false)
             ->groupBy('lr.loan_id');
