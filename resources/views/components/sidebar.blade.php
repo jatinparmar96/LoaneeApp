@@ -101,7 +101,9 @@
                 </ul>
             </li> -->
 
-
+            <li>
+                <a href="{{route('daily_reports')}}">Daily Reports</a>
+            </li>
             @if(Auth::User())
                 <li>
                     <a href="{{route('changePasswordView')}}">Change Password</a>
@@ -112,7 +114,7 @@
                     <a href="{{ route('register') }}">CreateUser</a>
                 </li>
             @endif
-            @if(Auth::User()->isAdmin)
+            <!--@if(Auth::User()->isAdmin)
                 <li>
                     <a href="{{ route('startBackup') }}">Backup</a>
                 </li>
@@ -121,7 +123,7 @@
                 <li>
                     <a href="{{ route('RestoreView') }}">Restore</a>
                 </li>
-            @endif
+            @endif -->
             @if(Auth::User())
                 <li>
 

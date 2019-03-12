@@ -91,8 +91,11 @@ Route::middleware('auth')->group(function(){
     Route::get('payPenalty/{id}','PenaltyController@payPenalty')->name('payPenalty');
     Route::get('refreshPenalty','PenaltyController@refreshPenalty')->name('refreshPenalty');
     Route::get('pay-custom-penalty/{id}','PenaltyController@customPenalty')->name('customPenalty');
-
-
+    
+    Route::prefix('reports')->group(function (){
+       Route::get('daily_reports','Report\DailyReportController@get_view')->name('daily_reports');
+       Route::get('make_daily_reports/{id?}','Report\DailyReportController@daily_report')->name('make_daily_reports');
+    });
 
     Route::get('/start-Backup','BackupController@createBackup')->name('startBackup');
     Route::get('/restore-Backup-view','BackupController@RestoreView')->name('RestoreView');

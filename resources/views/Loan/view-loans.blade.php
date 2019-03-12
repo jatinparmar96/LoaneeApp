@@ -93,7 +93,7 @@
                                             <div class=" container-fluid bg-white">
                                                 <!-- START card -->
                                                 <div class="card card-transparent">
-                                                    <div class="card-body">
+                                                    <div class="card-block scrollable">
                                                         <table class="table  dt-responsive nowrap" id="daily"
                                                                style="width:100%">
                                                             <thead>
@@ -133,7 +133,7 @@
                                             <div class=" container-fluid bg-white">
                                                 <!-- START card -->
                                                 <div class="card card-transparent">
-                                                    <div class="card-body">
+                                                    <div class="card-block scrollable">
                                                         <table class="table dt-responsive nowrap" id="percent"
                                                                style="width:100%">
                                                             <thead>
@@ -171,7 +171,7 @@
                                             <div class=" container-fluid bg-white">
                                                 <!-- START card -->
                                                 <div class="card card-transparent">
-                                                    <div class="card-body">
+                                                    <div class="card-block scrollable">
                                                         <table class="table  dt-responsive nowrap" id="room_table"
                                                                style="width:100%">
                                                             <thead>

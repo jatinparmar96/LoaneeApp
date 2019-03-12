@@ -60,7 +60,7 @@
         <div class="content pt-0">
 
             <!-- START CONTAINER FLUID -->
-            <div class=" container-fluid   container-fixed-lg">
+            <div class=" container-fluid container-fixed-lg">
                 <ul class="nav nav-tabs nav-tabs-fillup">
                     <li class="active">
                         <a class="active" data-toggle="tab" href="#days"><h2 class="bold">Daily</h2></a>
@@ -90,13 +90,23 @@
                         <div class="card card-transparent">
                             <div class="card-header ">
                                 <div class="card-title">
-                                    <h3>Today's Pending Records</h3>
+                                    <h3>Daily Report</h3>
+                                </div>
+                                <div>
+                                <h3><span id="total_daily_amount"></span> </h3>
                                 </div>
                             </div>
-                            <div class="card-block scrollable">
+                            <div class="card-body">
                                 <div class="row">
+                                    <div>
+                                        <input autocomplete="off" type="text" class="form-control date" id="daily_date"
+                                               name="end_date">
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-xs btn-primary ml-2 mt-2" onclick="updateDaysTable()">Get</button>
+                                    </div>
                                     <div class="col-md-12">
-                                        <div class=" container-fluid   container-fixed-lg bg-white">
+                                        <div class=" container-fluid container-fixed-lg bg-white">
                                             <!-- START card -->
                                             <div class="card card-transparent">
                                                 <div class="card-body">
@@ -104,18 +114,10 @@
                                                            style="width: 100%">
                                                         <thead>
                                                         <tr>
-                                                            <th style="width: 5px !important;">User Name</th>
-                                                            <th style="width: 5% !important;">Card Number</th>
-                                                            <th style="width: 7% !important;">Amount</th>
-                                                            <th style="width: 7% !important;">Penalty_amount</th>
-                                                            <th style="width: 10% !important;">Record Date</th>
-                                                            @if(Auth::User()->isAdmin)
-
-                                                                <th style="width: 5%;">Pay Full</th>
-                                                                <th style="width: 5%;">Pay Bulk</th>
-                                                                <th style="width: 5%;">Pay Penalty</th>
-                                                            @endif
-                                                             <th style="width: 5%;">Loan Details</th>
+                                                            <th style="width: 5%">User Name</th>
+                                                            <th style="width: 5%">Card Number</th>
+                                                            <th style="width: 7%">Amount Paid</th>
+                                                            <th style="width: 5%;">Loan Details</th>
                                                         </tr>
                                                         </thead>
 
@@ -192,7 +194,7 @@
                                         <div class=" container-fluid   container-fixed-lg bg-white">
                                             <!-- START card -->
                                             <div class="card card-transparent">
-                                                <div class="card-body ">
+                                                <div class="card-body">
 
                                                     <table class="table data-table" id="room_table"
                                                            style="width: 100%">
@@ -209,8 +211,9 @@
                                                                 <th style="width: 5%;">Pay Full</th>
                                                                 <th style="width: 5%;">Pay Bulk</th>
                                                                 <th style="width: 5%;">Pay Penalty</th>
-                                                                <th style="width: 5%;">Loan Details</th>
+
                                                             @endif
+                                                            <th style="width: 5%;">Loan Details</th>
                                                         </tr>
                                                         </thead>
 
@@ -372,275 +375,46 @@
 <script src="{{asset('assets/js/datatables.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/form_layouts.js')}}" type="text/javascript"></script>
 <script src="{{asset('assets/js/scripts.js')}}" type="text/javascript"></script>
-<script src={{asset('js/date-hi-IN.js')}}></script>
+<script src="{{asset('js/date-hi-IN.js')}}"></script>
+
 <script>
-
-    $(document).ready(function () {
-        initializeDaysDatatable();
-        initializePercentageDatatable();
-        initializeRoomDatatable();
-        // initializePercentageDatatables();
-        //initializeRoomDatatables();
-
-        $('.form-control.input-sm').focus();
+    $('.form-control.date').datepicker({
+        format: 'dd-mm-yyyy'
     });
+    $(document).ready(function () {
+      initializeDaysDatatable()
+    });
+    function updateDaysTable() {
+        let date = $('#daily_date').val();
+        initializeDaysDatatable(date);
+    }
 
-    function initializeDaysDatatable() {
+    function initializeDaysDatatable(date='') {
+        let total_amount = 0;
         $('#days_table').DataTable({
             destroy: true,
             ajax: {
-                url: "{{route('pending_list')}}",
+                url: "{{url('reports/make_daily_reports')}}/"+date,
                 dataSrc: ''
             },
             columns: [
                 {
-                    data: 'name'
+                    data: 'user'
                 },
                 {
                     data: 'card_number'
                 },
                 {
-                    data: 'remaining_amount'
-                },
-                {
-                    data: 'penalty_amount'
-                },
-                {
-                    data: 'record_date'
-                },
-                    @if(Auth::User() -> isAdmin)
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<div class='btn-group'>" +
-                            "<a href=record/pay-Full-record/" + data +
-                            "> <button type='button' class='btn btn-xs btn-success'> " +
-                            "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button></a> " +
-                            "</div>"
+                    data: 'amount',
+                    render:function(data,type,row)
+                    {
+                        total_amount+=data;
+                        return data;
                     }
-                },
-                {
-                    data: getIdAndDate,
-                    render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\"" +
-                            data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
-                            "Bulk <i class='fa fa-arrow-circle-right'></i></button>";
-                    }
-                },
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick=\"openModel('" +
-                            data + "')\" class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
-                            "Penalty <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button>";
-                    }
-                },
-                    @endif
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<a href='view-LoanDetails/" + data + "'>" +
-                            "  <i class='fa fa-eye red fs-15'></i>" +
-                            "</a> ";
-                    }
-                }
-            ],
-            columnDefs: [         // see https://datatables.net/reference/option/columns.searchable
-                { 
-                    'searchable'    : false, 
-                    'targets'       : [2,3,4] 
                 },
             ]
         });
+        
         $('.dataTables_length').hide();
-        $('.form-control.input-sm').focus();
     }
-
-    function initializePercentageDatatable() {
-        $('#percentage_table').DataTable({
-            destroy: true,
-            ajax: {
-                url: "{{route('pending_percentage_records')}}",
-                dataSrc: ''
-            },
-            columns: [
-                {
-                    data: 'name'
-                },
-                {
-                    data: 'card_number'
-                },
-                {
-                    data: 'record_amount'
-                },
-                {
-                    data: 'penalty_amount'
-                },
-                {
-                    data: 'record_date'
-                },
-                    @if(Auth::User() -> isAdmin)
-                {
-                    data: 'id',
-                    render: function (data, type, row) {
-                        return "<div class='btn-group'>" +
-                            "<a href=record/pay-Full-record/" + data +
-                            "> <button type='button' class='btn btn-xs btn-success'> " +
-                            "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button></a> " +
-                            "</div>"
-                    }
-                },
-                {
-                    data: getIdAndDate,
-                    render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkPercentageModal(\"" +
-                            data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
-                            "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
-                    }
-                },
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick=\"openModel('" +
-                            data + "')\" class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
-                            "  Penalty <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button> ";
-                    }
-                },
-                    @endif
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<a href='loan_percentage_show/" + data + "'>" +
-                            "  <i class='fa fa-eye red fs-15'></i>" +
-                            "</a> ";
-                    }
-                }
-            ]
-        });
-        $('.dataTables_length').hide();
-        $('.form-control.input-sm').focus();
-    }
-
-    function initializeRoomDatatable() {
-        $('#room_table').DataTable({
-            destroy: true,
-            ajax: {
-                url: "{{route('pending_room_records')}}",
-                dataSrc: ''
-            },
-            columns: [
-                {
-                    data: 'name'
-                },
-                {
-                    data: 'building_name'
-                },
-                {
-                    data: 'room_no'
-                },
-                {
-                    data: 'record_amount'
-                },
-                {
-                    data: 'penalty_amount'
-                },
-                {
-                    data: 'record_date'
-                },
-                    @if(Auth::User() -> isAdmin)
-                {
-                    data: 'id',
-                    render: function (data, type, row) {
-                        return "<div class='btn-group'>" +
-                            "<a href=record/pay-Full-record/" + data +
-                            "> <button type='button' class='btn btn-xs btn-success'> " +
-                            "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button></a> " +
-                            "</div>"
-                    }
-                },
-                {
-                    data: getIdAndDate,
-                    render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick='openBulkModal(\"" +
-                            data + "\")' class='toggle-btn btn btn-xs btn-danger'>" +
-                            "  Bulk <i class='fa fa-arrow-circle-right'></i></button>";
-                    }
-                },
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<button type='button' id='btnStickUpSizeToggler' onclick=\"openModel('" +
-                            data + "')\" class='toggle-btn btn btn-xs btn-outline-primary m-l-5'>" +
-                            "Penalty <i class='fa fa-arrow-circle-right'></i>" +
-                            "</button> ";
-                    }
-                },
-                    @endif
-                {
-                    data: 'loan_id',
-                    render: function (data, type, row) {
-                        return "<a href='loan_room_show/" + data + "'>" +
-                            "  <i class='fa fa-eye red fs-15'></i>" +
-                            "</a> ";
-                    }
-                }
-            ]
-        });
-        $('.dataTables_length').hide();
-        $('.form-control.input-sm').focus();
-    }
-
-    function getIdAndDate(data, type, dataToSet) {
-        return data.loan_id + ',' + data.record_date;
-    }
-
-    function openBulkModal(id) {
-        let loan_id = id.split(',')[0];
-        let record_date = formatDate(id.split(',')[1]);
-        console.log(record_date);
-        $('#bulkPayModal').modal('show');
-        $('#pay_bulk_record_start_date').val(record_date);
-        $('#bulkPayModelForm').attr('action', "{{url('payBulkRecords')}}/" + loan_id);
-    }
-    $('#bulkPayModal').on('shown.bs.modal',function () {
-        $('#pay_bulk_record_end_date').focus();
-    });
-     function formatDate(input) {
-        var datePart = input.match(/\d+/g),
-            year = datePart[0], // get only two digits
-            month = datePart[1], day = datePart[2];
-
-        return day + '/' + month + '/' + year;
-    }
-    function openBulkPercentageModal(id) {
-        let loan_id = id.split(',')[0];
-        let record_date = Date.parse(id.split(',')[1]).toString('dd/MM/yyyy');
-        //    record_date = record_date.toString('dd/MM/yyyy');
-        console.log(record_date);
-        $('#bulkPayModal').modal('show');
-        $('#bulkPayModelForm').attr('action', "{{url('payBulkRecords')}}/" + loan_id);
-    }
-
-    function openModel(value) {
-        $('#myModal').modal('show');
-        $('#modalForm').attr('action', "{{url('pay-custom-penalty')}}/" + value);
-    }
-
-
-    $('.form-control.date').datepicker({
-        format: 'd/m/yyyy'
-    });
-
-    $('#modelForm').submit(function () {
-        $(this).find(':input[type=submit]').prop('disabled', true);
-    })
 </script>
-
-</body>
-
-</html>

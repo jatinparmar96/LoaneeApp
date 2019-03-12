@@ -149,8 +149,7 @@ class RecordController extends Controller
         $loans = Loan::all();
         foreach ($loans as $loan) {
             $record = LoanRecord::where([
-                ['loan_id', $loan->id],
-                ['record_date', '<=', $today]
+                ['loan_id', $loan->id]
             ])->getPending()->first();
             if ($record) {
                 $user = $record->getUser()->first();
@@ -178,7 +177,6 @@ class RecordController extends Controller
             ->addSelect('lr.record_amount as remaining_amount', 'lr.record_date')
             ->addSelect('p.amount as penalty_amount')
             ->addSelect('u.name', 'u.card_number')
-            ->where('lr.record_date', '<=', Carbon::today())
             ->where('lr.paid', false)
             ->where('p.paid', false)
             ->groupBy('lr.loan_id');
@@ -204,8 +202,8 @@ class RecordController extends Controller
 
     public function payFullRecord($id)
     {
-        $record = LoanRecord::find($id);
-        $loan_id = $record->getLoan()->first()->id;
+        $record = LoanRecord::where('loan_id',$id)->getPending()->orderBy('record_date','asc')->first();
+        $loan_id = $id;
         $record->paid = 1;
         $record->save();
         $this->updatePenalty($loan_id, $record);
