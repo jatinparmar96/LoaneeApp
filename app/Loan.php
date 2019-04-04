@@ -4,6 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Loan
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\LoanRecord[] $records
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Loan getPending()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Loan newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Loan newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Loan query()
+ * @mixin \Eloquent
+ */
 class Loan extends Model
 {
 

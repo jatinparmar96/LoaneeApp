@@ -4,6 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\LoanUser
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\LoanUser newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\LoanUser newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\LoanUser query()
+ * @mixin \Eloquent
+ */
 class LoanUser extends Model
 {
   public function getLoan()
