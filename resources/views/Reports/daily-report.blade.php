@@ -93,7 +93,7 @@
                                     <h3>Daily Report</h3>
                                 </div>
                                 <div>
-                                <h3 >Total Amount: <span id="total_daily_amount"></span> </h3>
+                                    <h3>Total Amount: <span id="total_daily_amount"></span></h3>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -103,7 +103,9 @@
                                                name="end_date">
                                     </div>
                                     <div>
-                                        <button class="btn btn-xs btn-primary ml-2 mt-2" onclick="updateDaysTable()">Get</button>
+                                        <button class="btn btn-xs btn-primary ml-2 mt-2" onclick="updateDaysTable()">
+                                            Get
+                                        </button>
                                     </div>
                                     <div class="col-md-12">
                                         <div class=" container-fluid container-fixed-lg bg-white">
@@ -167,9 +169,7 @@
                                                             @endif
                                                         </tr>
                                                         </thead>
-
                                                     </table>
-
                                                 </div>
                                             </div>
                                             <!-- END card -->
@@ -182,7 +182,6 @@
 
                     <div class="tab-pane" id="room">
                         <div class="card card-transparent">
-
                             <div class="card-header ">
                                 <div class="card-title">
                                     <h3>Today's Pending Records</h3>
@@ -207,18 +206,14 @@
                                                             <th style="width: 7%;">Penalty_amount</th>
                                                             <th style="width: 10%;">Record Date</th>
                                                             @if(Auth::User()->isAdmin)
-
                                                                 <th style="width: 5%;">Pay Full</th>
                                                                 <th style="width: 5%;">Pay Bulk</th>
                                                                 <th style="width: 5%;">Pay Penalty</th>
-
                                                             @endif
                                                             <th style="width: 5%;">Loan Details</th>
                                                         </tr>
                                                         </thead>
-
                                                     </table>
-
                                                 </div>
                                             </div>
                                             <!-- END card -->
@@ -240,7 +235,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i
                                     class="pg-close fs-14"></i>
                         </button>
-                        <h5>Payment <span class="semi-bold">Information</span></h5>
+                        <h5>Payment <span class="semi-bold">Information</span></h5>L̥
                         <p>Enter the amount for the record</p>
                     </div>
                     <div class="modal-body">
@@ -382,19 +377,20 @@
         format: 'dd-mm-yyyy'
     });
     $(document).ready(function () {
-      initializeDaysDatatable()
+        initializeDaysDatatable()
     });
+
     function updateDaysTable() {
         let date = $('#daily_date').val();
         initializeDaysDatatable(date);
     }
 
-    function initializeDaysDatatable(date='') {
+    function initializeDaysDatatable(date = '') {
         let total_amount = 0;
         $('#days_table').DataTable({
             destroy: true,
             ajax: {
-                url: "{{url('reports/make_daily_reports')}}/"+date,
+                url: "{{url('reports/make_daily_reports')}}/" + date,
                 dataSrc: 'records'
             },
             columns: [
@@ -406,9 +402,8 @@
                 },
                 {
                     data: 'amount',
-                    render:function(data,type,row)
-                    {
-                        total_amount+=data;
+                    render: function (data, type, row) {
+                        total_amount += data;
                         return data;
                     }
                 },
@@ -422,11 +417,13 @@
                 }
             ]
         });
-        $.ajax({url: "{{url('reports/make_daily_reports')}}/"+date, success: function(result){
-            let data = JSON.parse(result); 
-            console.log(data.total_amount_today);
-            $('#total_daily_amount').html(data.total_amount_today);
-        }});
+        $.ajax({
+            url: "{{url('reports/make_daily_reports')}}/" + date, success: function (result) {
+                let data = JSON.parse(result);
+                console.log(data.total_amount_today);
+                $('#total_daily_amount').html(data.total_amount_today);
+            }
+        });
         $('.dataTables_length').hide();
     }
 </script>
