@@ -410,12 +410,12 @@
                     data: 'record_date'
                 },
                     @if(Auth::User() -> isAdmin)
-                {
+                {//
                     data: 'loan_id',
                     render: function (data, type, row) {
                         return "<div class='btn-group'>" +
                             "<a href=record/pay-Full-record/" + data +
-                            "> <button type='button' class='btn btn-xs btn-success'> " +
+                            "> <button type='button' onclick='this.disabled=true;' class='btn btn-xs btn-success'> " +
                             "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
                             "</button></a> " +
                             "</div>"
@@ -488,7 +488,7 @@
                     render: function (data, type, row) {
                         return "<div class='btn-group'>" +
                             "<a href=record/pay-Full-record/" + data +
-                            "> <button type='button' class='btn btn-xs btn-success'> " +
+                            "> <button type='button' onclick='this.disabled=true;' class='btn btn-xs btn-success'> " +
                             "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
                             "</button></a> " +
                             "</div>"
@@ -558,7 +558,7 @@
                     render: function (data, type, row) {
                         return "<div class='btn-group'>" +
                             "<a href=record/pay-Full-record/" + data +
-                            "> <button type='button' class='btn btn-xs btn-success'> " +
+                            "> <button type='button' onclick='this.disabled=true; class='btn btn-xs btn-success'> " +
                             "Daily EMI <i class='fa fa-arrow-circle-right'></i>" +
                             "</button></a> " +
                             "</div>"
